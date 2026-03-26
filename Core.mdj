@@ -3057,7 +3057,58 @@
 					"_parent": {
 						"$ref": "AAAAAAGdBMsIwSTopOA="
 					},
-					"name": "Wiki"
+					"name": "Wiki",
+					"attributes": [
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAGdKIj/3Yj+uag=",
+							"_parent": {
+								"$ref": "AAAAAAGdBOKHvigZV14="
+							},
+							"name": "name",
+							"type": "string"
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAGdKIllJIkFiV4=",
+							"_parent": {
+								"$ref": "AAAAAAGdBOKHvigZV14="
+							},
+							"name": "description",
+							"type": "string"
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAGdKImF54kM4og=",
+							"_parent": {
+								"$ref": "AAAAAAGdBOKHvigZV14="
+							},
+							"name": "author",
+							"type": {
+								"$ref": "AAAAAAGdBMsT5CTt4a0="
+							}
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAGdKInVJ4kTzMU=",
+							"_parent": {
+								"$ref": "AAAAAAGdBOKHvigZV14="
+							},
+							"name": "species",
+							"type": {
+								"$ref": "AAAAAAGdBNzBuicgUEY="
+							}
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAGdKIo7P4kaaaQ=",
+							"_parent": {
+								"$ref": "AAAAAAGdBOKHvigZV14="
+							},
+							"name": "id",
+							"type": "UUID"
+						}
+					]
 				},
 				{
 					"_type": "UMLClassDiagram",
@@ -3656,12 +3707,104 @@
 									"model": {
 										"$ref": "AAAAAAGdBOKHvigZV14="
 									},
+									"subViews": [
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAGdKIj/5YkBU0I=",
+											"_parent": {
+												"$ref": "AAAAAAGdKFe46H4DhcU="
+											},
+											"model": {
+												"$ref": "AAAAAAGdKIj/3Yj+uag="
+											},
+											"font": "Arial;13;0",
+											"parentStyle": true,
+											"left": 591,
+											"top": 223,
+											"width": 151,
+											"height": 13,
+											"text": "+name: string",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAGdKIllKokI8kk=",
+											"_parent": {
+												"$ref": "AAAAAAGdKFe46H4DhcU="
+											},
+											"model": {
+												"$ref": "AAAAAAGdKIllJIkFiV4="
+											},
+											"font": "Arial;13;0",
+											"parentStyle": true,
+											"left": 591,
+											"top": 238,
+											"width": 151,
+											"height": 13,
+											"text": "+description: string",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAGdKImF7IkPQsE=",
+											"_parent": {
+												"$ref": "AAAAAAGdKFe46H4DhcU="
+											},
+											"model": {
+												"$ref": "AAAAAAGdKImF54kM4og="
+											},
+											"font": "Arial;13;0",
+											"parentStyle": true,
+											"left": 591,
+											"top": 253,
+											"width": 151,
+											"height": 13,
+											"text": "+author: User",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAGdKInVK4kW6tc=",
+											"_parent": {
+												"$ref": "AAAAAAGdKFe46H4DhcU="
+											},
+											"model": {
+												"$ref": "AAAAAAGdKInVJ4kTzMU="
+											},
+											"font": "Arial;13;0",
+											"parentStyle": true,
+											"left": 591,
+											"top": 268,
+											"width": 151,
+											"height": 13,
+											"text": "+species: BirdSpecies",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAGdKIo7RYkdQP8=",
+											"_parent": {
+												"$ref": "AAAAAAGdKFe46H4DhcU="
+											},
+											"model": {
+												"$ref": "AAAAAAGdKIo7P4kaaaQ="
+											},
+											"font": "Arial;13;0",
+											"parentStyle": true,
+											"left": 591,
+											"top": 283,
+											"width": 151,
+											"height": 13,
+											"text": "+id: UUID",
+											"horizontalAlignment": 0
+										}
+									],
 									"font": "Arial;13;0",
 									"parentStyle": true,
 									"left": 586,
 									"top": 218,
 									"width": 161,
-									"height": 10
+									"height": 83
 								},
 								{
 									"_type": "UMLOperationCompartmentView",
@@ -3675,7 +3818,7 @@
 									"font": "Arial;13;0",
 									"parentStyle": true,
 									"left": 586,
-									"top": 228,
+									"top": 301,
 									"width": 161,
 									"height": 10
 								},
@@ -3720,7 +3863,7 @@
 							"left": 586,
 							"top": 193,
 							"width": 160,
-							"height": 80,
+							"height": 118,
 							"nameCompartment": {
 								"$ref": "AAAAAAGdKFe46H3+6nE="
 							},
