@@ -28,9 +28,9 @@ class NestingSite(models.Model):
     def __str__(self):
         return self.name
     
-class NestingSite(models.Model):
+class NestingStatus(models.Model):
     name = models.CharField(max_length = 100)
-    nesting_site = models.ForeignKey(NestingSite, on_delete=models.CASCADE, verbose_name="Гнездовье")
+    nesting_site = models.ForeignKey(NestingSite, on_delete=models.CASCADE, verbose_name="Статус гнездованья")
     description = models.TextField(blank=True,null=True)
 
     def __str__(self):
@@ -45,7 +45,7 @@ class MigrationRoute(models.Model):
     
 class SightingDuringMigration(models.Model):
     name = models.CharField(max_length = 100)
-    nesting_site = models.ForeignKey(MigrationRoute, on_delete=models.CASCADE, verbose_name="Гнездовье")
+    nesting_site = models.ForeignKey(MigrationRoute, on_delete=models.CASCADE, verbose_name="Наблюдение во время миграции")
     description = models.TextField(blank=True,null=True)
 
     def __str__(self):
