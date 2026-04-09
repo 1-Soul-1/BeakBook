@@ -16,6 +16,9 @@ class Location(models.Model):
     
 class BirdSpecies(models.Model):
     name = models.CharField(max_length = 100)
+    family = models.TextField(blank=True,null=True)
+    typical_nesting = models.TextField()
+    conservation_status = models.TextField() 
     description = models.TextField(blank=True,null=True)
 
     def __str__(self):
@@ -30,7 +33,7 @@ class NestingSite(models.Model):
     
 class NestingStatus(models.Model):
     name = models.CharField(max_length = 100)
-    nesting_site = models.ForeignKey(NestingSite, on_delete=models.CASCADE, verbose_name="Статус гнездованья")
+    # nesting_site = models.ForeignKey(NestingSite, on_delete=models.CASCADE, verbose_name="Статус гнездованья")
     description = models.TextField(blank=True,null=True)
 
     def __str__(self):
