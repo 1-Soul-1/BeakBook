@@ -48,7 +48,7 @@ class MigrationRoute(models.Model):
     
 class SightingDuringMigration(models.Model):
     name = models.CharField(max_length = 100)
-    nesting_site = models.ForeignKey(MigrationRoute, on_delete=models.CASCADE, verbose_name="Наблюдение во время миграции")
+    during_migration = models.ForeignKey(MigrationRoute, on_delete=models.CASCADE, verbose_name="Наблюдение во время миграции")
     description = models.TextField(blank=True,null=True)
 
     def __str__(self):
