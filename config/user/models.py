@@ -11,7 +11,7 @@ class ObservationEntry(models.Model):
     name = models.CharField(max_length = 100)
     observation_entry = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Запись наблюдений")
     bird_activity = models.TextField(blank=True,null=True)
-    nptes = models.TextField()
+    notes = models.TextField()
 
     def __str__(self):
         return self.name
