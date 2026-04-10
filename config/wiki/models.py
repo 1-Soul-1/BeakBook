@@ -18,8 +18,6 @@ class BirdPhoto(models.Model):
 
 class BirdCall(models.Model):
     description = models.TextField(blank=True,null=True)
-    # name = models.CharField(max_length = 100)
-    # author = models.TextField(blank=True,null=True)
 
     def __str__(self):
         return self.description
