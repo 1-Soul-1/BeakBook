@@ -1,17 +1,20 @@
-from django.urls import path,include
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import BirdsSerializer, LocationSerializer, BirdSpeciesSerializer, NestingSiteSerializer, NestingStatusSerializer, MigrationRouteSerializer, SightingDuringMigrationSerializer
-
+from .views import (
+    BirdsViewSet, LocationViewSet, BirdSpeciesViewSet,
+    NestingSiteViewSet, NestingStatusViewSet,
+    MigrationRouteViewSet, SightingDuringMigrationViewSet
+)
 
 router = DefaultRouter()
-router.register(r'Birds',BirdsSerializer)
-# router.register(r'location',LocationSerializer)
-# router.register(r'species',BirdSpeciesSerializer)
-# router.register(r'nesting_site',NestingSiteSerializer)
-# router.register(r'nesting_status',NestingStatusSerializer)
-# router.register(r'migration_route',MigrationRouteSerializer)
-# router.register(r'during_migration',SightingDuringMigrationSerializer)
+router.register(r'birds', BirdsViewSet)
+router.register(r'locations', LocationViewSet)
+router.register(r'species', BirdSpeciesViewSet)
+router.register(r'nesting-sites', NestingSiteViewSet)
+router.register(r'nesting-statuses', NestingStatusViewSet)
+router.register(r'migration-routes', MigrationRouteViewSet)
+router.register(r'sightings-during-migration', SightingDuringMigrationViewSet)
 
 urlpatterns = [
-    path('',include(router.urls)),
+    path('', include(router.urls)),
 ]

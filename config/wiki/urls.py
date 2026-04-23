@@ -1,13 +1,12 @@
-from django.urls import path,include
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import WikiSerializer, BirdPhotoSerializer, BirdCallSerializer
-
+from .views import WikiViewSet, BirdPhotoViewSet, BirdCallViewSet
 
 router = DefaultRouter()
-router.register(r'wiki',WikiSerializer)
-router.register(r'bird_photo',BirdPhotoSerializer)
-router.register(r'bird_call',BirdCallSerializer)
+router.register(r'wiki', WikiViewSet)
+router.register(r'bird-photos', BirdPhotoViewSet)
+router.register(r'bird-calls', BirdCallViewSet)
 
 urlpatterns = [
-    path('',include(router.urls)),
+    path('', include(router.urls)),
 ]
