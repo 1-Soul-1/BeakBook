@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     BirdsViewSet, LocationViewSet, BirdSpeciesViewSet,
     NestingSiteViewSet, NestingStatusViewSet,
-    MigrationRouteViewSet, SightingDuringMigrationViewSet
+    MigrationRouteViewSet, SightingDuringMigrationViewSet,
 )
 
 router = DefaultRouter()
