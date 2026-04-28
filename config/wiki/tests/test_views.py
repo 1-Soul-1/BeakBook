@@ -2,7 +2,7 @@
 import pytest
 from rest_framework.test import APIClient
 from django.urls import reverse
-from Birds.models import Wiki, BirdPhoto, BirdCall
+from ..models import Wiki, BirdPhoto, BirdCall
 
 
 @pytest.mark.django_db

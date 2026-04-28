@@ -1,7 +1,7 @@
 # tests/test_serializers.py
 import pytest
-from Birds.models import Wiki, BirdPhoto, BirdCall
-from Birds.serializers import WikiSerializer, BirdPhotoSerializer, BirdCallSerializer
+from ..models import Wiki, BirdPhoto, BirdCall
+from ..serializers import WikiSerializer, BirdPhotoSerializer, BirdCallSerializer
 
 
 @pytest.mark.django_db

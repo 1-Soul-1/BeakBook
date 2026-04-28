@@ -1,6 +1,6 @@
 # tests/test_models.py
 import pytest
-from Birds.models import Wiki, BirdPhoto, BirdCall
+from ..models import Wiki, BirdPhoto, BirdCall
 
 
 @pytest.mark.django_db
