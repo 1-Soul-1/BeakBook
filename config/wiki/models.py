@@ -20,4 +20,7 @@ class BirdCall(models.Model):
     description = models.TextField(blank=True,null=True)
 
     def __str__(self):
-        return self.description
+        # Возвращаем строку, даже если description None или пустой
+        if self.description:
+            return self.description
+        return "Без описания"  # или return "" (пустую строку)

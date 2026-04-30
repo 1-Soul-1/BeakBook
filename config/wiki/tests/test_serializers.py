@@ -1,9 +1,10 @@
 # tests/test_serializers.py
 # python manage.py test wiki.tests
+
 import pytest
 from django.test import TestCase
-from ..models import Wiki, BirdPhoto, BirdCall
-from ..serializers import WikiSerializer, BirdPhotoSerializer, BirdCallSerializer
+from wiki.models import Wiki, BirdPhoto, BirdCall
+from wiki.serializers import WikiSerializer, BirdPhotoSerializer, BirdCallSerializer
 
 
 @pytest.mark.django_db
@@ -33,7 +34,7 @@ class TestWikiSerializer(TestCase):
 
 
 @pytest.mark.django_db
-class TestBirdPhotoSerializer:
+class TestBirdPhotoSerializer(TestCase):
     
     def test_bird_photo_serializer_valid_data(self):
         wiki = Wiki.objects.create(name="Орел")
@@ -61,7 +62,7 @@ class TestBirdPhotoSerializer:
 
 
 @pytest.mark.django_db
-class TestBirdCallSerializer:
+class TestBirdCallSerializer(TestCase):
     
     def test_bird_call_serializer_valid_data(self):
         data = {

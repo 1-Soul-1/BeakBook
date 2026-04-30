@@ -1,8 +1,9 @@
 # tests/test_models.py
 # python manage.py test wiki.tests
+
 import pytest
 from django.test import TestCase
-from ..models import Wiki, BirdPhoto, BirdCall
+from wiki.models import Wiki, BirdPhoto, BirdCall
 
 
 @pytest.mark.django_db
@@ -45,7 +46,7 @@ class TestWikiModel(TestCase):
 
 
 @pytest.mark.django_db
-class TestBirdPhotoModel:
+class TestBirdPhotoModel(TestCase):
     
     def test_create_bird_photo(self):
         wiki = Wiki.objects.create(name="Снегирь")
@@ -93,7 +94,7 @@ class TestBirdPhotoModel:
 
 
 @pytest.mark.django_db
-class TestBirdCallModel:
+class TestBirdCallModel(TestCase):
     
     def test_create_bird_call_with_description(self):
         bird_call = BirdCall.objects.create(
@@ -118,10 +119,10 @@ class TestBirdCallModel:
     
     def test_bird_call_str_method_empty_description(self):
         bird_call = BirdCall.objects.create(description=None)
-        
-        assert str(bird_call) is None
+        # Теперь это не вызовет ошибку, так как __str__ возвращает строку
+        assert str(bird_call) == "Без описания"  # или "" если вы выбрали пустую строку
     
-    def test_bird_call_blank_description(self):
+    def test_bird_call_str_method_blank_description(self):
         bird_call = BirdCall.objects.create(description="")
-        
-        assert bird_call.description == ""
+        # В зависимости от реализации __str__
+        assert str(bird_call) == "" or str(bird_call) == "Без описания"

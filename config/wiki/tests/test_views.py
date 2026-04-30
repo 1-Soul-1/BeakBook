@@ -1,16 +1,17 @@
 # tests/test_views.py
 # python manage.py test wiki.tests
+
 import pytest
 from django.test import TestCase
 from rest_framework.test import APIClient
 from django.urls import reverse
-from ..models import Wiki, BirdPhoto, BirdCall
+from wiki.models import Wiki, BirdPhoto, BirdCall
 
 
 @pytest.mark.django_db
 class TestWikiViewSet(TestCase):
     
-    def setup_method(self):
+    def setUp(self):
         self.client = APIClient()
         self.wiki_data = {
             'name': 'Соловей',
@@ -62,9 +63,9 @@ class TestWikiViewSet(TestCase):
 
 
 @pytest.mark.django_db
-class TestBirdPhotoViewSet:
+class TestBirdPhotoViewSet(TestCase):
     
-    def setup_method(self):
+    def setUp(self):
         self.client = APIClient()
         self.wiki = Wiki.objects.create(name="Снегирь")
         self.photo_data = {
@@ -94,9 +95,9 @@ class TestBirdPhotoViewSet:
 
 
 @pytest.mark.django_db
-class TestBirdCallViewSet:
+class TestBirdCallViewSet(TestCase):
     
-    def setup_method(self):
+    def setUp(self):
         self.client = APIClient()
         self.call_data = {
             'description': 'Мелодичные трели'
@@ -110,10 +111,10 @@ class TestBirdCallViewSet:
         assert response.data['description'] == 'Мелодичные трели'
         assert BirdCall.objects.count() == 1
     
-    def test_bird_call_str_method_in_api(self):
+    def test_bird_call_retrieve(self):
         bird_call = BirdCall.objects.create(description='Ку-ку')
         url = reverse('birdcall-detail', args=[bird_call.id])
         response = self.client.get(url)
         
         assert response.status_code == 200
-        assert str(bird_call) in str(response.data)
+        assert response.data['description'] == 'Ку-ку'

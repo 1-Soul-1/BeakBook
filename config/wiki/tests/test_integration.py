@@ -1,8 +1,9 @@
 # tests/test_integration.py
 # python manage.py test wiki.tests
+
 import pytest
 from django.test import TestCase
-from ..models import Wiki, BirdPhoto, BirdCall
+from wiki.models import Wiki, BirdPhoto, BirdCall
 
 
 @pytest.mark.django_db
