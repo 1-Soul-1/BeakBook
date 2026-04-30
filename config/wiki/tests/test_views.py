@@ -1,12 +1,14 @@
 # tests/test_views.py
+# python manage.py test wiki.tests
 import pytest
+from django.test import TestCase
 from rest_framework.test import APIClient
 from django.urls import reverse
 from ..models import Wiki, BirdPhoto, BirdCall
 
 
 @pytest.mark.django_db
-class TestWikiViewSet:
+class TestWikiViewSet(TestCase):
     
     def setup_method(self):
         self.client = APIClient()

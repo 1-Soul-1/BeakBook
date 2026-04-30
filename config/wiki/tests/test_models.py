@@ -1,10 +1,12 @@
 # tests/test_models.py
+# python manage.py test wiki.tests
 import pytest
+from django.test import TestCase
 from ..models import Wiki, BirdPhoto, BirdCall
 
 
 @pytest.mark.django_db
-class TestWikiModel:
+class TestWikiModel(TestCase):
     
     def test_create_wiki_with_all_fields(self):
         wiki = Wiki.objects.create(

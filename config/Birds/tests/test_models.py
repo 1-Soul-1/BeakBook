@@ -1,13 +1,14 @@
 # tests/test_models.py
+# python manage.py test Birds.tests
 import pytest
-from ..models import (
+from django.test import TestCase
+from Birds.models import (
     Birds, Location, BirdSpecies, NestingSite, 
     NestingStatus, MigrationRoute, SightingDuringMigration
 )
 
-
 @pytest.mark.django_db
-class TestBirdsModel:
+class TestBirdsModel(TestCase):
     
     def test_create_birds_with_all_fields(self):
         # Тест создания птицы со всеми полями
@@ -42,7 +43,7 @@ class TestBirdsModel:
 
 
 @pytest.mark.django_db
-class TestLocationModel:
+class TestLocationModel(TestCase):
     
     def test_create_location_with_all_fields(self):
         # Тест создания места обитания со всеми полями
@@ -77,7 +78,7 @@ class TestLocationModel:
 
 
 @pytest.mark.django_db
-class TestBirdSpeciesModel:
+class TestBirdSpeciesModel(TestCase):
     
     def test_create_bird_species_with_all_fields(self):
         # Тест создания вида птицы со всеми полями
@@ -130,7 +131,7 @@ class TestBirdSpeciesModel:
 
 
 @pytest.mark.django_db
-class TestNestingSiteModel:
+class TestNestingSiteModel(TestCase):
     
     def test_create_nesting_site_with_all_fields(self):
         # Тест создания места гнездования со всеми полями
@@ -165,7 +166,7 @@ class TestNestingSiteModel:
 
 
 @pytest.mark.django_db
-class TestNestingStatusModel:
+class TestNestingStatusModel(TestCase):
     
     def test_create_nesting_status_with_all_fields(self):
         # Тест создания статуса гнездования со всеми полями
@@ -226,7 +227,7 @@ class TestNestingStatusModel:
 
 
 @pytest.mark.django_db
-class TestMigrationRouteModel:
+class TestMigrationRouteModel(TestCase):
     
     def test_create_migration_route_with_all_fields(self):
         # Тест создания миграционного маршрута со всеми полями
@@ -261,7 +262,7 @@ class TestMigrationRouteModel:
 
 
 @pytest.mark.django_db
-class TestSightingDuringMigrationModel:
+class TestSightingDuringMigrationModel(TestCase):
     
     def test_create_sighting_with_all_fields(self):
         # Тест создания наблюдения во время миграции со всеми полями

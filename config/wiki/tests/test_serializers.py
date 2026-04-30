@@ -1,11 +1,13 @@
 # tests/test_serializers.py
+# python manage.py test wiki.tests
 import pytest
+from django.test import TestCase
 from ..models import Wiki, BirdPhoto, BirdCall
 from ..serializers import WikiSerializer, BirdPhotoSerializer, BirdCallSerializer
 
 
 @pytest.mark.django_db
-class TestWikiSerializer:
+class TestWikiSerializer(TestCase):
     
     def test_wiki_serializer_valid_data(self):
         data = {

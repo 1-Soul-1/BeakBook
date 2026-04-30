@@ -1,6 +1,8 @@
 # tests/test_serializers.py
+# python manage.py test Birds.tests
 import pytest
-from ..models import (
+from django.test import TestCase
+from Birds.models import (
     Birds, Location, BirdSpecies, NestingSite, 
     NestingStatus, MigrationRoute, SightingDuringMigration
 )
@@ -12,7 +14,7 @@ from ..serializers import (
 
 
 @pytest.mark.django_db
-class TestBirdsSerializer:
+class TestBirdsSerializer(TestCase):
     
     def test_birds_serializer_valid_data(self):
         # Тест валидации корректных данных для сериализатора Birds
@@ -36,7 +38,7 @@ class TestBirdsSerializer:
 
 
 @pytest.mark.django_db
-class TestLocationSerializer:
+class TestLocationSerializer(TestCase):
     
     def test_location_serializer_valid_data(self):
         # Тест валидации корректных данных для сериализатора Location
@@ -60,7 +62,7 @@ class TestLocationSerializer:
 
 
 @pytest.mark.django_db
-class TestBirdSpeciesSerializer:
+class TestBirdSpeciesSerializer(TestCase):
     
     def test_bird_species_serializer_valid_data(self):
         # Тест валидации корректных данных для сериализатора BirdSpecies
@@ -87,7 +89,7 @@ class TestBirdSpeciesSerializer:
 
 
 @pytest.mark.django_db
-class TestNestingSiteSerializer:
+class TestNestingSiteSerializer(TestCase):
     
     def test_nesting_site_serializer_valid_data(self):
         # Тест валидации корректных данных для сериализатора NestingSite
@@ -111,7 +113,7 @@ class TestNestingSiteSerializer:
 
 
 @pytest.mark.django_db
-class TestNestingStatusSerializer:
+class TestNestingStatusSerializer(TestCase):
     
     def test_nesting_status_serializer_valid_data(self):
         # Тест валидации корректных данных для сериализатора NestingStatus
@@ -139,7 +141,7 @@ class TestNestingStatusSerializer:
 
 
 @pytest.mark.django_db
-class TestMigrationRouteSerializer:
+class TestMigrationRouteSerializer(TestCase):
     
     def test_migration_route_serializer_valid_data(self):
         # Тест валидации корректных данных для сериализатора MigrationRoute
@@ -163,7 +165,7 @@ class TestMigrationRouteSerializer:
 
 
 @pytest.mark.django_db
-class TestSightingDuringMigrationSerializer:
+class TestSightingDuringMigrationSerializer(TestCase):
     
     def test_sighting_serializer_valid_data(self):
         # Тест валидации корректных данных для сериализатора SightingDuringMigration

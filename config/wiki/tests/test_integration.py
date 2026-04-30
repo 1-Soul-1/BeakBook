@@ -1,10 +1,12 @@
 # tests/test_integration.py
+# python manage.py test wiki.tests
 import pytest
+from django.test import TestCase
 from ..models import Wiki, BirdPhoto, BirdCall
 
 
 @pytest.mark.django_db
-class TestIntegration:
+class TestIntegration(TestCase):
     
     def test_complete_bird_workflow(self):
         wiki = Wiki.objects.create(
