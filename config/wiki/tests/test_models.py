@@ -119,10 +119,8 @@ class TestBirdCallModel(TestCase):
     
     def test_bird_call_str_method_empty_description(self):
         bird_call = BirdCall.objects.create(description=None)
-        # Теперь это не вызовет ошибку, так как __str__ возвращает строку
-        assert str(bird_call) == "Без описания"  # или "" если вы выбрали пустую строку
+        assert str(bird_call) == "Без описания" 
     
     def test_bird_call_str_method_blank_description(self):
         bird_call = BirdCall.objects.create(description="")
-        # В зависимости от реализации __str__
         assert str(bird_call) == "" or str(bird_call) == "Без описания"
