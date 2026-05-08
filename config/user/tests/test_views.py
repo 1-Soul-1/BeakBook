@@ -6,7 +6,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
 from django.urls import get_resolver
-from ..models import User, ObservationEntry
+from user.models import User, ObservationEntry
 
 class UserViewSetTest(TestCase):
     # Тесты для UserViewSet (API эндпоинты пользователей)
