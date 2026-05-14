@@ -1,12 +1,15 @@
 from django.contrib import admin
 from django.db import models
+from django.utils.html import format_html
 from wiki.models import Wiki, BirdPhoto, BirdCall
+
 
 @admin.register(Wiki)
 class WikiAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'author')
     search_fields = ('name', 'author')
     list_display_links = ('id', 'name')
+
 
 @admin.register(BirdPhoto)
 class BirdPhotoAdmin(admin.ModelAdmin):
@@ -17,14 +20,14 @@ class BirdPhotoAdmin(admin.ModelAdmin):
     
     def image_preview(self, obj):
         if obj.image:
-            return f'<img src="{obj.image.url}" width="100" height="auto" />'
+            return format_html('<img src="{}" width="100" height="auto" />', obj.image.url)
         return "Нет изображения"
-    image_preview.allow_tags = True
     image_preview.short_description = "Превью"
     
     formfield_overrides = {
         models.TextField: {'widget': admin.widgets.AdminTextareaWidget(attrs={'rows': 3, 'cols': 70})},
     }
+
 
 @admin.register(BirdCall)
 class BirdCallAdmin(admin.ModelAdmin):
