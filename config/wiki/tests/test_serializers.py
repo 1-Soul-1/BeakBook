@@ -4,7 +4,7 @@
 import pytest
 from django.test import TestCase
 from wiki.models import Wiki, BirdPhoto, BirdCall
-from wiki.serializers import WikiSerializer, BirdPhotoSerializer, BirdCallSerializer
+from config.wiki.api.serializers import WikiSerializer, BirdPhotoSerializer, BirdCallSerializer
 
 
 @pytest.mark.django_db

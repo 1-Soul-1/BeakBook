@@ -6,7 +6,7 @@ from Birds.models import (
     Birds, Location, BirdSpecies, NestingSite, 
     NestingStatus, MigrationRoute, SightingDuringMigration
 )
-from ..serializers import (
+from ..api.serializers import (
     BirdsSerializer, LocationSerializer, BirdSpeciesSerializer,
     NestingSiteSerializer, NestingStatusSerializer,
     MigrationRouteSerializer, SightingDuringMigrationSerializer

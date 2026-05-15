@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from .models import Birds, Location, BirdSpecies, NestingSite, NestingStatus, MigrationRoute, SightingDuringMigration
+from ..models import Birds, Location, BirdSpecies, NestingSite, NestingStatus, MigrationRoute, SightingDuringMigration
 from .serializers import BirdsSerializer, LocationSerializer, BirdSpeciesSerializer, NestingSiteSerializer, NestingStatusSerializer, MigrationRouteSerializer, SightingDuringMigrationSerializer
 
 class BirdsViewSet(viewsets.ModelViewSet):
@@ -29,3 +29,5 @@ class MigrationRouteViewSet(viewsets.ModelViewSet):
 class SightingDuringMigrationViewSet(viewsets.ModelViewSet):
     queryset = SightingDuringMigration.objects.all()
     serializer_class = SightingDuringMigrationSerializer
+
+# Валидациявходящих данных; вызов метода серивеса; сериализация результатов.

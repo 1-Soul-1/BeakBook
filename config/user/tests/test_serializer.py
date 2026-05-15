@@ -4,7 +4,7 @@
 import pytest
 from django.test import TestCase
 from user.models import User, ObservationEntry
-from user.serializers import UserSerializer, ObservationEntrySerializer
+from config.user.api.serializers import UserSerializer, ObservationEntrySerializer
 
 class UserSerializerTest(TestCase):
     # Тесты для сериализатора User

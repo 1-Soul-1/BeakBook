@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from .models import Wiki, BirdPhoto, BirdCall
+from ..models import Wiki, BirdPhoto, BirdCall
 from .serializers import WikiSerializer, BirdPhotoSerializer, BirdCallSerializer
 
 class WikiViewSet(viewsets.ModelViewSet):
