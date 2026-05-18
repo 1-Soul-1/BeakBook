@@ -1,3 +1,4 @@
+# Вся алгоритмическая логика; работа с несколькими моделями; рассчёты; валидация, требущая доступ к БД.
 # from typing import List, Set
 # from django.db.models import Prefetch
 # from Product.models import Dish
