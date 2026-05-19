@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'Birds',
     'user',
     'wiki',
+    # 'api'
 ]
 
 MIDDLEWARE = [

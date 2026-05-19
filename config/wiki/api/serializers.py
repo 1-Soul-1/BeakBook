@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import Wiki, BirdPhoto, BirdCall
+from wiki.models import Wiki, BirdPhoto, BirdCall
 
 class WikiSerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,6 +1,10 @@
 from rest_framework import viewsets
-from ..models import Birds, Location, BirdSpecies, NestingSite, NestingStatus, MigrationRoute, SightingDuringMigration
-from .serializers import BirdsSerializer, LocationSerializer, BirdSpeciesSerializer, NestingSiteSerializer, NestingStatusSerializer, MigrationRouteSerializer, SightingDuringMigrationSerializer
+from Birds.models import Birds, Location, BirdSpecies, NestingSite, NestingStatus, MigrationRoute, SightingDuringMigration
+from Birds.api.serializers import (
+    BirdsSerializer, LocationSerializer, BirdSpeciesSerializer,
+    NestingSiteSerializer, NestingStatusSerializer,
+    MigrationRouteSerializer, SightingDuringMigrationSerializer
+)
 
 class BirdsViewSet(viewsets.ModelViewSet):
     queryset = Birds.objects.all()

@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from ..models import Wiki, BirdPhoto, BirdCall
-from .serializers import WikiSerializer, BirdPhotoSerializer, BirdCallSerializer
+from wiki.models import Wiki, BirdPhoto, BirdCall
+from wiki.api.serializers import WikiSerializer, BirdPhotoSerializer, BirdCallSerializer
 
 class WikiViewSet(viewsets.ModelViewSet):
     queryset = Wiki.objects.all()
@@ -12,4 +12,4 @@ class BirdPhotoViewSet(viewsets.ModelViewSet):
 
 class BirdCallViewSet(viewsets.ModelViewSet):
     queryset = BirdCall.objects.all()
-    serializer_class = BirdCallSerializer   
+    serializer_class = BirdCallSerializer

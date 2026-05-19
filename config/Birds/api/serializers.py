@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import Birds, Location, BirdSpecies, NestingSite, NestingStatus, MigrationRoute, SightingDuringMigration
+from Birds.models import Birds, Location, BirdSpecies, NestingSite, NestingStatus, MigrationRoute, SightingDuringMigration
 
 class BirdsSerializer(serializers.ModelSerializer):
     class Meta:
