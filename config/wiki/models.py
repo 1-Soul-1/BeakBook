@@ -1,9 +1,9 @@
 from django.db import models
 
 class Wiki(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True, null=True)
-    author = models.TextField(blank=True, null=True)
+    name = models.CharField(max_length=100, verbose_name="Имя")
+    description = models.TextField(blank=True, null=True, verbose_name="Описание статьи")
+    author = models.TextField(blank=True, null=True, verbose_name="Автор статьи")
 
     def __str__(self):
         return self.name
