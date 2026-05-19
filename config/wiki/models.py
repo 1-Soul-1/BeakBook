@@ -14,7 +14,7 @@ class BirdPhoto(models.Model):
     wiki = models.ForeignKey(Wiki, on_delete=models.CASCADE, verbose_name="Связанная статья", null=True, blank=True)
     photographer = models.CharField(max_length=100, blank=True, null=True, verbose_name="Фотограф")
     description = models.TextField(blank=True, null=True, verbose_name="Описание фото")
-    image = models.ImageField(upload_to='bird_photos/', blank=True, null=True, verbose_name="Изображение")  # <-- НОВОЕ ПОЛЕ
+    image = models.ImageField(upload_to='bird_photos/', blank=True, null=True, verbose_name="Изображение")
 
     def __str__(self):
         return self.name
