@@ -17,14 +17,12 @@ class ObservationEntrySerializer(serializers.ModelSerializer):
         read_only_fields = ['observation_date']
 
 
-# Временный упрощенный сериализатор для создания
 class CreateObservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ObservationEntry
         fields = ['name', 'user', 'bird_species', 'wiki_article', 'bird_activity', 'notes', 'location']
 
 
-# Временный упрощенный сериализатор
 class UserWithObservationsSerializer(serializers.ModelSerializer):
     observations = ObservationEntrySerializer(many=True, read_only=True)
     total_observations = serializers.SerializerMethodField()

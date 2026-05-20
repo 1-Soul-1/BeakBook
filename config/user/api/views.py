@@ -34,7 +34,7 @@ class ObservationEntryViewSet(viewsets.ModelViewSet):
         return ObservationEntrySerializer
     
     def create(self, request, *args, **kwargs):
-        """Создание наблюдения с привязкой к птице и статье"""
+        # Создание наблюдения с привязкой к птице и статье
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         

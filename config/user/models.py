@@ -35,7 +35,7 @@ class ObservationEntry(models.Model):
     bird_activity = models.TextField(blank=True, null=True, verbose_name="Активность птиц")
     notes = models.TextField(blank=True, null=True, verbose_name="Примечание/заметка")
     
-    # Исправлено: auto_now_add=True автоматически устанавливает дату при создании
+    # auto_now_add=True автоматически устанавливает дату при создании
     observation_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата наблюдения")
     location = models.CharField(max_length=200, blank=True, null=True, verbose_name="Место наблюдения")
 
