@@ -1,7 +1,7 @@
 from django.db import models
 
 class Wiki(models.Model):
-    name = models.CharField(max_length=100, verbose_name="Имя")
+    name = models.CharField(max_length=100, verbose_name="Название статьи")
     description = models.TextField(blank=True, null=True, verbose_name="Описание статьи")
     author = models.TextField(blank=True, null=True, verbose_name="Автор статьи")
 

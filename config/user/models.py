@@ -8,7 +8,7 @@ class User(models.Model):
         return self.name
     
 class ObservationEntry(models.Model):
-    name = models.CharField(max_length = 100, verbose_name="Имя")
+    name = models.CharField(max_length = 100, verbose_name="Название")
     observation_entry = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Запись наблюдений")
     bird_activity = models.TextField(blank=True,null=True, verbose_name="Примечание/заметка")
     notes = models.TextField(blank=True,null=True, verbose_name="Активность птиц")
