@@ -34,4 +34,4 @@ class SightingDuringMigrationViewSet(viewsets.ModelViewSet):
     queryset = SightingDuringMigration.objects.all()
     serializer_class = SightingDuringMigrationSerializer
 
-# Валидациявходящих данных; вызов метода серивеса; сериализация результатов.
+# Валидация входящих данных; вызов метода серивеса; сериализация результатов.
