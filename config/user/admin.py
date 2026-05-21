@@ -11,15 +11,24 @@ class UserAdmin(admin.ModelAdmin):
 @admin.register(ObservationEntry)
 class ObservationEntryAdmin(admin.ModelAdmin):
     list_display = (
-    'id',
-    'name',
-    'user',
-    'bird_species',        # Вид птицы
-    'wiki_article',        # Связанная статья
-    'location',            # Место наблюдения
-    'observation_date',
+        'id',
+        'name',
+        'user',
+        'bird_species',
+        'wiki_article',
+        'location',
+        'observation_date',
     )
     search_fields = ('name', 'bird_activity', 'notes', 'location')
     list_filter = ('user', 'observation_date', 'bird_species', 'wiki_article')
-    readonly_fields = ('observation_date',)
-    list_select_related = ('user', 'bird_species', 'wiki_article')  
+    # Убираем observation_date из readonly_fields, чтобы можно было редактировать
+    readonly_fields = ()  # или оставьте пустым
+    list_select_related = ('user', 'bird_species', 'wiki_article')
+    
+    # Опционально: можно добавить поле observation_date в fieldsets
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'user', 'bird_species', 'wiki_article', 
+                      'bird_activity', 'notes', 'observation_date', 'location')
+        }),
+    )

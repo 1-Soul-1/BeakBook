@@ -35,9 +35,19 @@ class ObservationEntry(models.Model):
     bird_activity = models.TextField(blank=True, null=True, verbose_name="Активность птиц")
     notes = models.TextField(blank=True, null=True, verbose_name="Примечание/заметка")
     
-    # auto_now_add=True автоматически устанавливает дату при создании
-    observation_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата наблюдения")
+    # убрано auto_now_add=True, добавлен default
+    observation_date = models.DateTimeField(
+        default=timezone.now,  # Автоматически устанавливается, если не указано
+        blank=True,
+        verbose_name="Дата наблюдения"
+    )
     location = models.CharField(max_length=200, blank=True, null=True, verbose_name="Место наблюдения")
+
+    def save(self, *args, **kwargs):
+        # Если дата не установлена, устанавливаем текущую
+        if not self.observation_date:
+            self.observation_date = timezone.now()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.name} - {self.user.name}"
