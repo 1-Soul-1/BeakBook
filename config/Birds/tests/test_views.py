@@ -1,5 +1,6 @@
 # tests/test_views.py
 # python manage.py test Birds.tests
+# pytest -v
 
 import pytest
 from rest_framework.test import APIClient
