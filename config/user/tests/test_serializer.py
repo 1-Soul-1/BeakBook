@@ -1,10 +1,11 @@
-# tests/test_serializers.py
+# user/tests/test_serializer.py
 # python manage.py test user.tests
 
 import pytest
 from django.test import TestCase
 from user.models import User, ObservationEntry
-from config.user.api.serializers import UserSerializer, ObservationEntrySerializer
+from user.api.serializers import UserSerializer, ObservationEntrySerializer
+
 
 class UserSerializerTest(TestCase):
     # Тесты для сериализатора User
@@ -69,13 +70,13 @@ class ObservationEntrySerializerTest(TestCase):
         )
         self.observation_data = {
             'name': 'Наблюдение за птицей',
-            'observation_entry': self.user.id,
+            'user': self.user.id,  # Исправлено: было 'observation_entry'
             'bird_activity': 'Птица поет',
             'notes': 'Звонкое пение'
         }
         self.observation = ObservationEntry.objects.create(
             name='Существующее наблюдение',
-            observation_entry=self.user,
+            user=self.user,  # Исправлено: было 'observation_entry'
             bird_activity='Старая активность'
         )
     
@@ -85,12 +86,12 @@ class ObservationEntrySerializerTest(TestCase):
         self.assertTrue(serializer.is_valid())
         observation = serializer.save()
         self.assertEqual(observation.name, self.observation_data['name'])
-        self.assertEqual(observation.observation_entry.id, self.observation_data['observation_entry'])
+        self.assertEqual(observation.user.id, self.observation_data['user'])  # Исправлено
     
     def test_observation_serializer_missing_name(self):
         # Тест отсутствия обязательного поля name
         invalid_data = {
-            'observation_entry': self.user.id,
+            'user': self.user.id,  # Исправлено
             'bird_activity': 'Активность'
         }
         serializer = ObservationEntrySerializer(data=invalid_data)
@@ -105,13 +106,13 @@ class ObservationEntrySerializerTest(TestCase):
         }
         serializer = ObservationEntrySerializer(data=invalid_data)
         self.assertFalse(serializer.is_valid())
-        self.assertIn('observation_entry', serializer.errors)
+        self.assertIn('user', serializer.errors)  # Исправлено: было 'observation_entry'
     
     def test_observation_serializer_update(self):
         # Тест полного обновления через сериализатор
         updated_data = {
             'name': 'Обновленное наблюдение',
-            'observation_entry': self.user.id,
+            'user': self.user.id,  # Исправлено
             'bird_activity': 'Новая активность',
             'notes': 'Обновленные заметки'
         }
@@ -139,4 +140,4 @@ class ObservationEntrySerializerTest(TestCase):
         data = serializer.data
         self.assertEqual(data['id'], self.observation.id)
         self.assertEqual(data['name'], self.observation.name)
-        self.assertEqual(data['observation_entry'], self.observation.observation_entry.id)
+        self.assertEqual(data['user'], self.observation.user.id)  # Исправлено

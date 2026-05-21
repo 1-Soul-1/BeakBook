@@ -1,10 +1,11 @@
-# tests/test_models.py
+# user/tests/test_models.py
 # python manage.py test user.tests
 
 import pytest
 from django.test import TestCase
 from django.db import IntegrityError
 from user.models import User, ObservationEntry
+
 
 class UserModelTest(TestCase):
     # Тесты для модели User
@@ -65,7 +66,7 @@ class ObservationEntryModelTest(TestCase):
         )
         self.observation_data = {
             'name': 'Наблюдение за синицей',
-            'observation_entry': self.user,
+            'user': self.user,  # Исправлено: было 'observation_entry'
             'bird_activity': 'Синица кормится на кормушке',
             'notes': 'Дополнительные заметки'
         }
@@ -75,22 +76,23 @@ class ObservationEntryModelTest(TestCase):
         # Тест создания записи наблюдений
         observation = ObservationEntry.objects.create(
             name='Новое наблюдение',
-            observation_entry=self.user,
+            user=self.user,  # Исправлено: было 'observation_entry'
             bird_activity='Активность птицы',
             notes='Заметки'
         )
         self.assertEqual(observation.name, 'Новое наблюдение')
-        self.assertEqual(observation.observation_entry, self.user)
+        self.assertEqual(observation.user, self.user)  # Исправлено
     
     def test_observation_str_method(self):
         # Тест строкового представления наблюдения
-        self.assertEqual(str(self.observation), self.observation.name)
+        expected_str = f"{self.observation.name} - {self.user.name}"
+        self.assertEqual(str(self.observation), expected_str)
     
     def test_observation_bird_activity_nullable(self):
         # Тест что bird_activity может быть null
         observation = ObservationEntry.objects.create(
             name='Наблюдение без активности',
-            observation_entry=self.user,
+            user=self.user,  # Исправлено
             bird_activity=None,
             notes='Только заметки'
         )
@@ -100,7 +102,7 @@ class ObservationEntryModelTest(TestCase):
         # Тест что notes может быть пустым
         observation = ObservationEntry.objects.create(
             name='Наблюдение без заметок',
-            observation_entry=self.user,
+            user=self.user,  # Исправлено
             bird_activity='Активность есть',
             notes=''
         )
@@ -108,7 +110,7 @@ class ObservationEntryModelTest(TestCase):
     
     def test_observation_foreign_key_constraint(self):
         # Тест внешнего ключа - каскадное удаление
-        observation_count = ObservationEntry.objects.filter(observation_entry=self.user).count()
+        observation_count = ObservationEntry.objects.filter(user=self.user).count()
         self.assertEqual(observation_count, 1)
         
         # Сохраняем ID пользователя до удаления
@@ -117,15 +119,15 @@ class ObservationEntryModelTest(TestCase):
         # Удаляем пользователя
         self.user.delete()
         
-        # Проверяем, что наблюдения удалились (фильтруем по ID, а не по объекту)
-        observation_count_after = ObservationEntry.objects.filter(observation_entry_id=user_id).count()
+        # Проверяем, что наблюдения удалились
+        observation_count_after = ObservationEntry.objects.filter(user_id=user_id).count()
         self.assertEqual(observation_count_after, 0)
     
     def test_observation_required_fields(self):
         # Тест обязательных полей
         observation = ObservationEntry(
             name='',
-            observation_entry=self.user
+            user=self.user  # Исправлено
         )
         with pytest.raises(Exception):
             observation.full_clean()
@@ -141,14 +143,14 @@ class ObservationEntryModelTest(TestCase):
         # Тест что у пользователя может быть несколько наблюдений
         ObservationEntry.objects.create(
             name='Наблюдение 2',
-            observation_entry=self.user,
+            user=self.user,  # Исправлено
             bird_activity='Активность 2'
         )
         ObservationEntry.objects.create(
             name='Наблюдение 3',
-            observation_entry=self.user,
+            user=self.user,  # Исправлено
             bird_activity='Активность 3'
         )
         
-        observations = ObservationEntry.objects.filter(observation_entry=self.user)
+        observations = ObservationEntry.objects.filter(user=self.user)
         self.assertEqual(observations.count(), 3)

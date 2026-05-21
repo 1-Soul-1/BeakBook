@@ -1,4 +1,4 @@
-# tests/test_models.py
+# wiki/tests/test_models.py
 # python manage.py test wiki.tests
 
 import pytest
@@ -52,20 +52,20 @@ class TestBirdPhotoModel(TestCase):
         wiki = Wiki.objects.create(name="Снегирь")
         bird_photo = BirdPhoto.objects.create(
             name="Снегирь на ветке",
-            bird_photo=wiki,
-            author="Петр Петров"
+            wiki=wiki,
+            photographer="Петр Петров"
         )
         
         assert bird_photo.id is not None
         assert bird_photo.name == "Снегирь на ветке"
-        assert bird_photo.bird_photo == wiki
-        assert bird_photo.author == "Петр Петров"
+        assert bird_photo.wiki == wiki
+        assert bird_photo.photographer == "Петр Петров"
     
     def test_bird_photo_str_method(self):
         wiki = Wiki.objects.create(name="Клёст")
         bird_photo = BirdPhoto.objects.create(
             name="Клёст на елке",
-            bird_photo=wiki
+            wiki=wiki
         )
         
         assert str(bird_photo) == "Клёст на елке"
@@ -74,22 +74,22 @@ class TestBirdPhotoModel(TestCase):
         wiki = Wiki.objects.create(name="Кукушка")
         bird_photo = BirdPhoto.objects.create(
             name="Кукушка в лесу",
-            bird_photo=wiki
+            wiki=wiki
         )
         
         wiki.delete()
         
         assert BirdPhoto.objects.filter(id=bird_photo.id).count() == 0
     
-    def test_bird_photo_optional_author(self):
+    def test_bird_photo_optional_photographer(self):
         wiki = Wiki.objects.create(name="Галка")
         bird_photo = BirdPhoto.objects.create(
             name="Галка на крыше",
-            bird_photo=wiki,
-            author=None
+            wiki=wiki,
+            photographer=None
         )
         
-        assert bird_photo.author is None
+        assert bird_photo.photographer is None
         assert bird_photo.id is not None
 
 
@@ -119,8 +119,8 @@ class TestBirdCallModel(TestCase):
     
     def test_bird_call_str_method_empty_description(self):
         bird_call = BirdCall.objects.create(description=None)
-        assert str(bird_call) == "Без описания" 
+        assert str(bird_call) == "Без описания"
     
     def test_bird_call_str_method_blank_description(self):
         bird_call = BirdCall.objects.create(description="")
-        assert str(bird_call) == "" or str(bird_call) == "Без описания"
+        assert str(bird_call) == "Без описания"

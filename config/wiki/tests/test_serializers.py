@@ -1,10 +1,10 @@
-# tests/test_serializers.py
+# wiki/tests/test_serializers.py
 # python manage.py test wiki.tests
 
 import pytest
 from django.test import TestCase
 from wiki.models import Wiki, BirdPhoto, BirdCall
-from config.wiki.api.serializers import WikiSerializer, BirdPhotoSerializer, BirdCallSerializer
+from wiki.api.serializers import WikiSerializer, BirdPhotoSerializer, BirdCallSerializer
 
 
 @pytest.mark.django_db
@@ -40,25 +40,40 @@ class TestBirdPhotoSerializer(TestCase):
         wiki = Wiki.objects.create(name="Орел")
         data = {
             'name': 'Орел в полете',
-            'bird_photo': wiki.id,
-            'author': 'Анна Смирнова'
+            'wiki': wiki.id,
+            'photographer': 'Анна Смирнова'
         }
         serializer = BirdPhotoSerializer(data=data)
         
         assert serializer.is_valid()
         bird_photo = serializer.save()
         assert bird_photo.name == 'Орел в полете'
-        assert bird_photo.bird_photo == wiki
+        assert bird_photo.wiki == wiki
     
-    def test_bird_photo_serializer_missing_bird_photo(self):
+    def test_bird_photo_serializer_missing_wiki(self):
+        """Поле wiki не обязательное, так как null=True, blank=True"""
         data = {
             'name': 'Фото птицы',
-            'author': 'Автор'
+            'photographer': 'Автор'
+        }
+        serializer = BirdPhotoSerializer(data=data)
+        
+        # Поле wiki не обязательно, поэтому сериализатор должен быть валидным
+        assert serializer.is_valid()
+        bird_photo = serializer.save()
+        assert bird_photo.wiki is None
+        assert bird_photo.name == 'Фото птицы'
+    
+    def test_bird_photo_serializer_missing_name(self):
+        """Поле name обязательное, так как не имеет null=True, blank=True"""
+        data = {
+            'wiki': 1,
+            'photographer': 'Автор'
         }
         serializer = BirdPhotoSerializer(data=data)
         
         assert not serializer.is_valid()
-        assert 'bird_photo' in serializer.errors
+        assert 'name' in serializer.errors
 
 
 @pytest.mark.django_db

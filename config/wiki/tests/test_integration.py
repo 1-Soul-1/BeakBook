@@ -1,4 +1,4 @@
-# tests/test_integration.py
+# wiki/tests/test_integration.py
 # python manage.py test wiki.tests
 
 import pytest
@@ -18,8 +18,8 @@ class TestIntegration(TestCase):
         
         photo = BirdPhoto.objects.create(
             name="Соловей поет",
-            bird_photo=wiki,
-            author="Фотограф Петров"
+            wiki=wiki,
+            photographer="Фотограф Петров"
         )
         
         bird_call = BirdCall.objects.create(

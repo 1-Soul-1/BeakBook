@@ -25,4 +25,6 @@ class BirdCall(models.Model):
     description = models.TextField(blank=True, null=True, verbose_name="Описание звука")
 
     def __str__(self):
-        return self.name if self.name else "Без названия"
+        if self.description:
+            return self.description
+        return "Без описания"

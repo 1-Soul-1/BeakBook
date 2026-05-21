@@ -1,12 +1,12 @@
-# tests/test_views.py
+# user/tests/test_views.py
 # python manage.py test user.tests
 
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
-from django.urls import get_resolver
 from user.models import User, ObservationEntry
+
 
 class UserViewSetTest(TestCase):
     # Тесты для UserViewSet (API эндпоинты пользователей)
@@ -16,59 +16,20 @@ class UserViewSetTest(TestCase):
         self.client = APIClient()
         self.user1 = User.objects.create(name='Пользователь 1', email='user1@example.com')
         self.user2 = User.objects.create(name='Пользователь 2', email='user2@example.com')
-        
-        # Получаем все зарегистрированные URL для отладки
-        resolver = get_resolver()
-        url_patterns = []
-        for pattern in resolver.url_patterns:
-            if hasattr(pattern, 'name') and pattern.name:
-                url_patterns.append(pattern.name)
-            if hasattr(pattern, 'url_patterns'):
-                for subpattern in pattern.url_patterns:
-                    if hasattr(subpattern, 'name') and subpattern.name:
-                        url_patterns.append(subpattern.name)
-        
-        # Пытаемся найти правильное имя для user-list
-        possible_names = ['user-list', 'users-list', 'api-user-list', 'users']
-        self.users_url = None
-        for name in possible_names:
-            try:
-                self.users_url = reverse(name)
-                break
-            except:
-                continue
-        
-        # Если не нашли, используем прямой путь
-        if not self.users_url:
-            self.users_url = '/users/'
     
     def test_get_all_users(self):
         # Тест получения списка всех пользователей (GET запрос)
-        response = self.client.get(self.users_url)
-        # Если получили 404, пробуем альтернативный путь
-        if response.status_code == 404:
-            response = self.client.get('/api/users/')
-        self.assertIn(response.status_code, [status.HTTP_200_OK, status.HTTP_404_NOT_FOUND])
-        if response.status_code == status.HTTP_200_OK:
-            self.assertGreaterEqual(len(response.data), 2)
+        url = reverse('user-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
     
     def test_get_single_user(self):
         # Тест получения одного пользователя по ID
-        # Пробуем разные варианты URL
-        urls_to_try = [
-            f'/users/{self.user1.id}/',
-            f'/api/users/{self.user1.id}/',
-            f'/user/{self.user1.id}/',
-        ]
-        
-        response = None
-        for url in urls_to_try:
-            response = self.client.get(url)
-            if response.status_code != 404:
-                break
-        
-        if response and response.status_code == status.HTTP_200_OK:
-            self.assertEqual(response.data['name'], self.user1.name)
+        url = reverse('user-detail', args=[self.user1.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], self.user1.name)
     
     def test_create_user(self):
         # Тест создания нового пользователя (POST запрос)
@@ -76,19 +37,11 @@ class UserViewSetTest(TestCase):
             'name': 'Новый Пользователь',
             'email': 'newuser@example.com'
         }
-        
-        # Пробуем разные URL для POST запроса
-        urls_to_try = ['/users/', '/api/users/']
-        
-        response = None
-        for url in urls_to_try:
-            response = self.client.post(url, new_user_data, format='json')
-            if response.status_code != 404:
-                break
-        
-        if response and response.status_code == status.HTTP_201_CREATED:
-            self.assertEqual(User.objects.count(), 3)
-            self.assertEqual(response.data['name'], new_user_data['name'])
+        url = reverse('user-list')
+        response = self.client.post(url, new_user_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(User.objects.count(), 3)
+        self.assertEqual(response.data['name'], new_user_data['name'])
     
     def test_update_user(self):
         # Тест полного обновления пользователя (PUT запрос)
@@ -96,64 +49,32 @@ class UserViewSetTest(TestCase):
             'name': 'Обновленный Пользователь',
             'email': 'updated@example.com'
         }
-        
-        urls_to_try = [
-            f'/users/{self.user1.id}/',
-            f'/api/users/{self.user1.id}/',
-        ]
-        
-        response = None
-        for url in urls_to_try:
-            response = self.client.put(url, updated_data, format='json')
-            if response.status_code != 404:
-                break
-        
-        if response and response.status_code == status.HTTP_200_OK:
-            self.user1.refresh_from_db()
-            self.assertEqual(self.user1.name, 'Обновленный Пользователь')
+        url = reverse('user-detail', args=[self.user1.id])
+        response = self.client.put(url, updated_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.user1.refresh_from_db()
+        self.assertEqual(self.user1.name, 'Обновленный Пользователь')
     
     def test_partial_update_user(self):
         # Тест частичного обновления пользователя (PATCH запрос)
-        urls_to_try = [
-            f'/users/{self.user1.id}/',
-            f'/api/users/{self.user1.id}/',
-        ]
-        
-        response = None
-        for url in urls_to_try:
-            response = self.client.patch(url, {'name': 'Частично Обновленный'}, format='json')
-            if response.status_code != 404:
-                break
-        
-        if response and response.status_code == status.HTTP_200_OK:
-            self.user1.refresh_from_db()
-            self.assertEqual(self.user1.name, 'Частично Обновленный')
+        url = reverse('user-detail', args=[self.user1.id])
+        response = self.client.patch(url, {'name': 'Частично Обновленный'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.user1.refresh_from_db()
+        self.assertEqual(self.user1.name, 'Частично Обновленный')
     
     def test_delete_user(self):
         # Тест удаления пользователя (DELETE запрос)
-        urls_to_try = [
-            f'/users/{self.user2.id}/',
-            f'/api/users/{self.user2.id}/',
-        ]
-        
-        response = None
-        for url in urls_to_try:
-            response = self.client.delete(url)
-            if response.status_code != 404:
-                break
-        
-        if response and response.status_code == status.HTTP_204_NO_CONTENT:
-            self.assertEqual(User.objects.count(), 1)
+        url = reverse('user-detail', args=[self.user2.id])
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(User.objects.count(), 1)
     
     def test_get_nonexistent_user(self):
         # Тест получения несуществующего пользователя (должен вернуть 404)
-        urls_to_try = ['/users/999/', '/api/users/999/']
-        
-        for url in urls_to_try:
-            response = self.client.get(url)
-            if response.status_code != 404:
-                self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-                break
+        url = reverse('user-detail', args=[999])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class ObservationEntryViewSetTest(TestCase):
@@ -165,131 +86,71 @@ class ObservationEntryViewSetTest(TestCase):
         self.user = User.objects.create(name='Наблюдатель', email='observer@example.com')
         self.observation1 = ObservationEntry.objects.create(
             name='Наблюдение 1',
-            observation_entry=self.user,
+            user=self.user,
             bird_activity='Активность 1'
         )
         self.observation2 = ObservationEntry.objects.create(
             name='Наблюдение 2',
-            observation_entry=self.user,
+            user=self.user,
             bird_activity='Активность 2'
         )
-        
-        # Пытаемся найти правильное имя для observationentry-list
-        possible_names = ['observationentry-list', 'observations-list', 'api-observationentry-list']
-        self.observations_url = None
-        for name in possible_names:
-            try:
-                self.observations_url = reverse(name)
-                break
-            except:
-                continue
-        
-        # Если не нашли, используем прямой путь
-        if not self.observations_url:
-            self.observations_url = '/observations/'
     
     def test_get_all_observations(self):
         # Тест получения списка всех наблюдений
-        response = self.client.get(self.observations_url)
-        if response.status_code == 404:
-            response = self.client.get('/api/observations/')
-        
-        if response.status_code == status.HTTP_200_OK:
-            self.assertEqual(len(response.data), 2)
+        url = reverse('observationentry-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
     
     def test_get_single_observation(self):
         # Тест получения одного наблюдения по ID
-        urls_to_try = [
-            f'/observations/{self.observation1.id}/',
-            f'/api/observations/{self.observation1.id}/',
-        ]
-        
-        response = None
-        for url in urls_to_try:
-            response = self.client.get(url)
-            if response.status_code != 404:
-                break
-        
-        if response and response.status_code == status.HTTP_200_OK:
-            self.assertEqual(response.data['name'], self.observation1.name)
+        url = reverse('observationentry-detail', args=[self.observation1.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], self.observation1.name)
     
     def test_create_observation(self):
         # Тест создания нового наблюдения
         new_observation_data = {
             'name': 'Новое наблюдение',
-            'observation_entry': self.user.id,
+            'user': self.user.id,
             'bird_activity': 'Новая активность',
             'notes': 'Новые заметки'
         }
-        
-        urls_to_try = ['/observations/', '/api/observations/']
-        
-        response = None
-        for url in urls_to_try:
-            response = self.client.post(url, new_observation_data, format='json')
-            if response.status_code != 404:
-                break
-        
-        if response and response.status_code == status.HTTP_201_CREATED:
-            self.assertEqual(ObservationEntry.objects.count(), 3)
-            self.assertEqual(response.data['name'], new_observation_data['name'])
+        url = reverse('observationentry-list')
+        response = self.client.post(url, new_observation_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(ObservationEntry.objects.count(), 3)
+        self.assertEqual(response.data['name'], new_observation_data['name'])
     
     def test_update_observation(self):
         # Тест полного обновления наблюдения
         updated_data = {
             'name': 'Обновленное наблюдение',
-            'observation_entry': self.user.id,
+            'user': self.user.id,
             'bird_activity': 'Обновленная активность',
             'notes': 'Обновленные заметки'
         }
-        
-        urls_to_try = [
-            f'/observations/{self.observation1.id}/',
-            f'/api/observations/{self.observation1.id}/',
-        ]
-        
-        response = None
-        for url in urls_to_try:
-            response = self.client.put(url, updated_data, format='json')
-            if response.status_code != 404:
-                break
-        
-        if response and response.status_code == status.HTTP_200_OK:
-            self.observation1.refresh_from_db()
-            self.assertEqual(self.observation1.name, 'Обновленное наблюдение')
+        url = reverse('observationentry-detail', args=[self.observation1.id])
+        response = self.client.put(url, updated_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.observation1.refresh_from_db()
+        self.assertEqual(self.observation1.name, 'Обновленное наблюдение')
     
     def test_partial_update_observation(self):
         # Тест частичного обновления наблюдения
-        urls_to_try = [
-            f'/observations/{self.observation1.id}/',
-            f'/api/observations/{self.observation1.id}/',
-        ]
-        
-        response = None
-        for url in urls_to_try:
-            response = self.client.patch(url, {'bird_activity': 'Частично обновленная активность'}, format='json')
-            if response.status_code != 404:
-                break
-        
-        if response and response.status_code == status.HTTP_200_OK:
-            self.observation1.refresh_from_db()
-            self.assertEqual(self.observation1.bird_activity, 'Частично обновленная активность')
+        url = reverse('observationentry-detail', args=[self.observation1.id])
+        response = self.client.patch(url, {'bird_activity': 'Частично обновленная активность'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.observation1.refresh_from_db()
+        self.assertEqual(self.observation1.bird_activity, 'Частично обновленная активность')
     
     def test_delete_observation(self):
         # Тест удаления наблюдения
-        urls_to_try = [
-            f'/observations/{self.observation2.id}/',
-            f'/api/observations/{self.observation2.id}/',
-        ]
-        
-        response = None
-        for url in urls_to_try:
-            response = self.client.delete(url)
-            if response.status_code != 404:
-                break
-        
-        if response and response.status_code == status.HTTP_204_NO_CONTENT:
-            self.assertEqual(ObservationEntry.objects.count(), 1)
+        url = reverse('observationentry-detail', args=[self.observation2.id])
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(ObservationEntry.objects.count(), 1)
     
     def test_create_observation_without_foreign_key(self):
         # Тест создания наблюдения без указания пользователя (должен вернуть ошибку)
@@ -297,41 +158,79 @@ class ObservationEntryViewSetTest(TestCase):
             'name': 'Наблюдение без пользователя',
             'bird_activity': 'Активность'
         }
-        
-        urls_to_try = ['/observations/', '/api/observations/']
-        
-        for url in urls_to_try:
-            response = self.client.post(url, invalid_data, format='json')
-            if response.status_code != 404:
-                self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-                break
+        url = reverse('observationentry-list')
+        response = self.client.post(url, invalid_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('user', response.data)
     
     def test_get_nonexistent_observation(self):
         # Тест получения несуществующего наблюдения
-        urls_to_try = ['/observations/999/', '/api/observations/999/']
-        
-        for url in urls_to_try:
-            response = self.client.get(url)
-            if response.status_code != 404:
-                self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-                break
+        url = reverse('observationentry-detail', args=[999])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
     
     def test_filter_observations_by_user(self):
-        # Тест фильтрации наблюдений по ID пользователя
-        another_user = User.objects.create(name='Другой наблюдатель', email='other@example.com')
-        ObservationEntry.objects.create(
-            name='Наблюдение другого пользователя',
-            observation_entry=another_user
+        # Тест проверки связи наблюдений с пользователями
+        
+        # Создаем пользователей
+        user1 = User.objects.create(name='Пользователь 1', email='user1@example.com')
+        user2 = User.objects.create(name='Пользователь 2', email='user2@example.com')
+        
+        # Создаем наблюдения
+        observation1 = ObservationEntry.objects.create(
+            name='Наблюдение 1',
+            user=user1,
+            bird_activity='Активность 1'
         )
         
-        urls_to_try = [
-            f'/observations/?observation_entry={self.user.id}',
-            f'/api/observations/?observation_entry={self.user.id}',
-        ]
+        observation2 = ObservationEntry.objects.create(
+            name='Наблюдение 2',
+            user=user1,
+            bird_activity='Активность 2'
+        )
         
-        for url in urls_to_try:
-            response = self.client.get(url)
-            if response.status_code != 404:
-                if response.status_code == status.HTTP_200_OK:
-                    self.assertEqual(len(response.data), 2)
-                break
+        observation3 = ObservationEntry.objects.create(
+            name='Наблюдение 3',
+            user=user2,
+            bird_activity='Активность 3'
+        )
+        
+        # Получаем все наблюдения через API
+        url = reverse('observationentry-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # Проверяем, что все наблюдения возвращаются (3 новых + 2 из setUp = 5)
+        self.assertEqual(len(response.data), 5)
+        
+        # Проверяем, что у каждого наблюдения есть поле user
+        for observation in response.data:
+            self.assertIn('user', observation)
+            self.assertIsNotNone(observation['user'])
+        
+        # Проверяем, что наблюдения user1 имеют правильные имена
+        user1_obs = [obs for obs in response.data if obs.get('user') == user1.id]
+        user1_names = [obs['name'] for obs in user1_obs]
+        self.assertIn('Наблюдение 1', user1_names)
+        self.assertIn('Наблюдение 2', user1_names)
+        self.assertEqual(len(user1_obs), 2)
+        
+        # Проверяем, что наблюдение user2 имеет правильное имя
+        user2_obs = [obs for obs in response.data if obs.get('user') == user2.id]
+        user2_names = [obs['name'] for obs in user2_obs]
+        self.assertIn('Наблюдение 3', user2_names)
+        self.assertEqual(len(user2_obs), 1)
+        
+        # Проверяем, что наблюдения из setUp принадлежат правильному пользователю
+        user_setup_obs = [obs for obs in response.data if obs.get('user') == self.user.id]
+        setup_names = [obs['name'] for obs in user_setup_obs]
+        self.assertIn('Наблюдение 1', setup_names)
+        self.assertIn('Наблюдение 2', setup_names)
+        self.assertEqual(len(user_setup_obs), 2)
+        
+        # Проверяем соответствие между API данными и БД
+        for observation in response.data:
+            db_observation = ObservationEntry.objects.get(id=observation['id'])
+            self.assertEqual(db_observation.user.id, observation['user'])
+            self.assertEqual(db_observation.name, observation['name'])
+            self.assertEqual(db_observation.bird_activity, observation['bird_activity'])

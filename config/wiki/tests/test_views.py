@@ -1,4 +1,4 @@
-# tests/test_views.py
+# wiki/tests/test_views.py
 # python manage.py test wiki.tests
 
 import pytest
@@ -70,8 +70,8 @@ class TestBirdPhotoViewSet(TestCase):
         self.wiki = Wiki.objects.create(name="Снегирь")
         self.photo_data = {
             'name': 'Снегирь на ветке',
-            'bird_photo': self.wiki.id,
-            'author': 'Петр Петров'
+            'wiki': self.wiki.id,
+            'photographer': 'Петр Петров'
         }
     
     def test_create_bird_photo(self):
@@ -82,16 +82,16 @@ class TestBirdPhotoViewSet(TestCase):
         assert response.data['name'] == 'Снегирь на ветке'
         assert BirdPhoto.objects.count() == 1
     
-    def test_create_bird_photo_without_author(self):
+    def test_create_bird_photo_without_photographer(self):
         url = reverse('birdphoto-list')
         data = {
             'name': 'Снегирь зимой',
-            'bird_photo': self.wiki.id
+            'wiki': self.wiki.id
         }
         response = self.client.post(url, data, format='json')
         
         assert response.status_code == 201
-        assert response.data['author'] is None
+        assert response.data.get('photographer') is None
 
 
 @pytest.mark.django_db
