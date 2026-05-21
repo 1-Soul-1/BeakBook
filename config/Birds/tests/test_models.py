@@ -1,7 +1,5 @@
 # tests/test_models.py
 # python manage.py test Birds.tests
-# pytest -v
-
 import pytest
 from django.test import TestCase
 from Birds.models import (

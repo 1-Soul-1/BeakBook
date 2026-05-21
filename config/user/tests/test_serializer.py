@@ -1,6 +1,5 @@
 # user/tests/test_serializer.py
 # python manage.py test user.tests
-# pytest -v
 
 import pytest
 from django.test import TestCase

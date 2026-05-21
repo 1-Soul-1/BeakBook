@@ -1,6 +1,5 @@
 # user/tests/test_views.py
 # python manage.py test user.tests
-# pytest -v
 
 from django.test import TestCase
 from django.urls import reverse
