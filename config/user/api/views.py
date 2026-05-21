@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from user.models import User, ObservationEntry
 from user.api.serializers import (
     UserSerializer, ObservationEntrySerializer, 
-    CreateObservationSerializer, UserWithObservationsSerializer
+    CreateObservationSerializer, UserWithObservationsSerializer  # ✅ теперь импорт работает
 )
 from user.services import ObservationService
 
@@ -34,21 +34,20 @@ class ObservationEntryViewSet(viewsets.ModelViewSet):
         return ObservationEntrySerializer
     
     def create(self, request, *args, **kwargs):
-        # Создание наблюдения с привязкой к птице и статье
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
         data = serializer.validated_data
         
-        observation = ObservationEntry.objects.create(
-            user=data['user'],
-            name=data['name'],
-            bird_species=data.get('bird_species'),
-            wiki_article=data.get('wiki_article'),
-            bird_activity=data.get('bird_activity', ''),
-            notes=data.get('notes', ''),
-            location=data.get('location', '')
-        )
+        # Извлекаем ManyToMany поля
+        bird_species_list = data.pop('bird_species', [])
+        wiki_articles_list = data.pop('wiki_articles', [])
+        
+        observation = ObservationEntry.objects.create(**data)
+        
+        # Добавляем связи ManyToMany
+        observation.bird_species.set(bird_species_list)
+        observation.wiki_articles.set(wiki_articles_list)
         
         result_serializer = ObservationEntrySerializer(observation)
         return Response(result_serializer.data, status=status.HTTP_201_CREATED)
