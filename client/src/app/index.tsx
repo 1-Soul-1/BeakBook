@@ -1,65 +1,88 @@
-import axios from "axios"
-import type { Bird } from "@/types/birds"
-import { useEffect, useState } from "react";
-import { FlatList, Text, View, StyleSheet, ActivityIndicator } from "react-native";
-// Импортируем из папки Bird
-// import BirdCard from "./Bird";
-import BirdCard from "@/components/BirdCard";
+import { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import BirdList from "@/components/BirdList";
+import WikiList from "@/components/WikiList";
 
-const API_URL_BIRDS = "http://127.0.0.1:8000/api/birds/birds/";
+export default function Index() {
+    const [showWiki, setShowWiki] = useState(false);
 
-const BirdList = () => {
-    const [birds, setBirds] = useState<Bird[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    const getBirds = async () => {
-        const response = await axios.get<Bird[]>(API_URL_BIRDS);
-        setBirds(response.data);
-        setLoading(false);
-    }
-
-    useEffect(() => {
-        getBirds();
-    }, []);
-
-    if (loading) {
+    if (showWiki) {
         return (
-            <View style={styles.center}>
-                <ActivityIndicator size="large" color="#0000ff" />
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <TouchableOpacity 
+                        style={styles.backButton}
+                        onPress={() => setShowWiki(false)}
+                    >
+                        <Text style={styles.backButtonText}>Назад</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.headerTitle}>Энциклопедия птиц</Text>
+                    <View style={styles.placeholder} />
+                </View>
+                <WikiList />
             </View>
         );
     }
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Список птиц</Text>
-            <FlatList
-                data={birds}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <BirdCard bird={item} />
-                )}
-            />
+            <View style={styles.header}>
+                <Text style={styles.headerTitle}>Птицы</Text>
+                <TouchableOpacity 
+                    style={styles.wikiButton}
+                    onPress={() => setShowWiki(true)}
+                >
+                    <Text style={styles.wikiButtonText}>Энциклопедия</Text>
+                </TouchableOpacity>
+            </View>
+            <BirdList />
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
+        backgroundColor: '#fff',
     },
     header: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 16,
-        textAlign: 'center',
-    },
-    center: {
-        flex: 1,
-        justifyContent: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
-    }
+        padding: 16,
+        paddingTop: 48,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd',
+        backgroundColor: '#f5f5f5',
+    },
+    headerTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    wikiButton: {
+        backgroundColor: '#007AFF',
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 8,
+    },
+    wikiButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    backButton: {
+        backgroundColor: '#007AFF',
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 8,
+    },
+    backButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    placeholder: {
+        width: 70,
+    },
 });
-
-export default BirdList
