@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>BeakBook — Орнитологический дневник</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #F5F0E8;
+            --bg-card: #FFFFFF;
+            --bg-card-alt: #FDFCF5;
+            --border-light: #E6E0D0;
+            --text-primary: #2E2C28;
+            --text-secondary: #6B6355;
+            --text-muted: #9B9383;
+            --accent: #6A7A5C;
+            --accent-light: #DDE6D6;
+            --accent-dark: #4A5A3E;
+            --warning: #D4B87A;
+            --warning-light: #FDF6E8;
+            --danger: #E39371;
+            --danger-light: #FDF0EA;
+            --favorite: #E8B84B;
+            --favorite-light: #FEF7E8;
+            --status-endangered: #E39371;
+            --status-endangered-bg: #FDF0EA;
+            --status-vulnerable: #E0B85C;
+            --status-vulnerable-bg: #FEF8EC;
+            --status-rare: #8FA47E;
+            --status-rare-bg: #EEF3EA;
+            --status-common: #A8A090;
+            --status-common-bg: #F3F1ED;
+            --header-bg: rgba(245, 240, 232, 0.96);
+            --nav-bg: rgba(245, 240, 232, 0.96);
+        }
+
+        body.dark {
+            --bg-primary: #1A1E18;
+            --bg-card: #252A22;
+            --bg-card-alt: #2E342A;
+            --border-light: #3D4338;
+            --text-primary: #F2EFE8;
+            --text-secondary: #C5C2B5;
+            --text-muted: #8F8B7A;
+            --accent: #8FA47E;
+            --accent-light: #3A4334;
+            --accent-dark: #6A7A5C;
+            --warning: #E0C068;
+            --warning-light: #3E3A2A;
+            --danger: #E39371;
+            --danger-light: #3E2E28;
+            --favorite: #F0C45A;
+            --favorite-light: #3E3828;
+            --status-endangered: #E39371;
+            --status-endangered-bg: #3E2E28;
+            --status-vulnerable: #E0B85C;
+            --status-vulnerable-bg: #3E3A28;
+            --status-rare: #8FA47E;
+            --status-rare-bg: #2E342A;
+            --status-common: #A8A090;
+            --status-common-bg: #2A2E28;
+            --header-bg: rgba(26, 30, 24, 0.96);
+            --nav-bg: rgba(26, 30, 24, 0.96);
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.45;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .mobile-container {
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .app-header {
+            padding: 20px 20px 12px;
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-light);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .logo-badge {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            color: var(--accent-dark);
+        }
+        body.dark .logo {
+            color: var(--accent);
+        }
+
+        .theme-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 40px;
+            padding: 10px 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+        .theme-btn:active {
+            transform: scale(0.97);
+        }
+        .theme-btn i {
+            font-size: 1rem;
+            color: var(--accent);
+        }
+
+        .subhead {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            padding: 20px 20px 32px;
+        }
+
+        /* Stats header */
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .stats-header h2 {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            letter-spacing: -0.2px;
+        }
+        .stats-counters {
+            display: flex;
+            gap: 10px;
+        }
+        .stat-chip {
+            background: var(--bg-card);
+            border-radius: 40px;
+            padding: 6px 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid var(--border-light);
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+        .stat-chip i {
+            color: var(--accent);
+            font-size: 0.8rem;
+        }
+        .stat-chip .count {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .stat-chip .label {
+            color: var(--text-secondary);
+        }
+        .favorite-chip {
+            background: var(--favorite-light);
+            border-color: var(--favorite);
+        }
+        .favorite-chip i {
+            color: var(--favorite);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-light);
+        }
+
+        /* Buttons */
+        .btn {
+            border-radius: 60px;
+            padding: 14px 24px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.2s;
+            cursor: pointer;
+            border: none;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            flex: 2;
+        }
+        .btn-primary:active {
+            background: var(--accent-dark);
+            transform: scale(0.97);
+        }
+        .btn-secondary {
+            background: transparent;
+            border: 1.5px solid var(--border-light);
+            color: var(--text-secondary);
+            flex: 1;
+            font-weight: 600;
+        }
+
+        /* Search */
+        .search-bar {
+            background: var(--bg-card);
+            border-radius: 48px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-light);
+        }
+        .search-bar i {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+        .search-bar input {
+            flex: 1;
+            background: none;
+            border: none;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        .search-bar input::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* Observation card */
+        .observation-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            margin-bottom: 16px;
+            padding: 18px;
+            transition: 0.1s;
+            border-left: 4px solid var(--accent);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+        .observation-card:active {
+            transform: scale(0.99);
+        }
+        .observation-card.favorited {
+            border-left-color: var(--favorite);
+            background: var(--bg-card-alt);
+        }
+
+        .bird-row {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+        .bird-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--accent-light);
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            color: var(--accent-dark);
+        }
+        .bird-details {
+            flex: 1;
+            min-width: 0;
+        }
+        .bird-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .meta-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 8px 0 0;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .family-badge, .date-tag, .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+        .family-badge {
+            background: var(--accent-light);
+            color: var(--accent-dark);
+        }
+        .date-tag {
+            background: var(--bg-card-alt);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-light);
+        }
+        .status-endangered {
+            background: var(--status-endangered-bg);
+            color: var(--status-endangered);
+        }
+        .status-vulnerable {
+            background: var(--status-vulnerable-bg);
+            color: var(--status-vulnerable);
+        }
+        .status-rare {
+            background: var(--status-rare-bg);
+            color: var(--status-rare);
+        }
+        .status-common {
+            background: var(--status-common-bg);
+            color: var(--status-common);
+        }
+
+        .photo-preview-card {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            object-fit: cover;
+            margin-left: 8px;
+            flex-shrink: 0;
+            border: 1px solid var(--border-light);
+        }
+        .photo-placeholder-card {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 1.2rem;
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+
+        .notes-preview {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            background: var(--bg-card-alt);
+            padding: 10px 12px;
+            border-radius: 20px;
+            margin-top: 12px;
+            font-weight: 500;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-light);
+        }
+        .action-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+            color: var(--text-secondary);
+        }
+        .action-icon i {
+            font-size: 0.75rem;
+        }
+        .action-icon.favorite-active {
+            color: var(--favorite);
+            background: var(--favorite-light);
+        }
+        .action-icon.delete-active {
+            color: var(--danger);
+            background: var(--danger-light);
+        }
+        .action-icon:hover {
+            transform: scale(0.96);
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            display: block;
+            color: var(--text-secondary);
+        }
+        input, textarea, select {
+            width: 100%;
+            border-radius: 24px;
+            border: 1.5px solid var(--border-light);
+            padding: 14px 18px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: 0.2s;
+            font-weight: 500;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .select-wrapper {
+            position: relative;
+        }
+        .select-wrapper select {
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        .select-wrapper i {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+            pointer-events: none;
+        }
+
+        .info-badge, .status-badge-large {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 24px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 10px;
+            margin-right: 8px;
+        }
+        .info-badge {
+            background: var(--accent-light);
+            color: var(--accent-dark);
+        }
+        .status-badge-large {
+            background: var(--status-rare-bg);
+            color: var(--status-rare);
+        }
+        .status-badge-large.status-endangered {
+            background: var(--status-endangered-bg);
+            color: var(--status-endangered);
+        }
+        .status-badge-large.status-vulnerable {
+            background: var(--status-vulnerable-bg);
+            color: var(--status-vulnerable);
+        }
+        .status-badge-large.status-common {
+            background: var(--status-common-bg);
+            color: var(--status-common);
+        }
+
+        .photo-upload {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .photo-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            object-fit: cover;
+            background: var(--accent-light);
+            border: 1px solid var(--border-light);
+        }
+        .upload-btn, .remove-photo-btn {
+            border-radius: 40px;
+            padding: 10px 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+        .upload-btn {
+            background: var(--accent-light);
+            color: var(--accent-dark);
+        }
+        .remove-photo-btn {
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .location-auto {
+            background: var(--accent-light);
+            border-radius: 24px;
+            padding: 10px 14px;
+            margin-top: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-dark);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .rare-species-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .rare-tag {
+            background: var(--accent-light);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-dark);
+            cursor: pointer;
+            border: 1px solid var(--border-light);
+        }
+
+        /* Bottom navigation */
+        .bottom-nav {
+            position: sticky;
+            bottom: 0;
+            background: var(--nav-bg);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            padding: 8px 12px 22px;
+            border-top: 1px solid var(--border-light);
+            z-index: 20;
+        }
+        .nav-tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+        }
+        .nav-tab i {
+            font-size: 1.3rem;
+        }
+        .nav-tab.active {
+            color: var(--accent);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 32px;
+            max-width: 420px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 24px;
+            border: 1px solid var(--border-light);
+        }
+        .modal-img {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            border-radius: 20px;
+            margin-bottom: 16px;
+        }
+        .modal-close {
+            width: 100%;
+            margin-top: 16px;
+            background: var(--accent-light);
+            border: none;
+            padding: 12px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: var(--accent-dark);
+            cursor: pointer;
+        }
+
+        /* Guide & Profile */
+        .species-list {
+            max-height: calc(100vh - 180px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+        .species-item {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .species-header {
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .species-desc {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .profile-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .profile-avatar {
+            width: 90px;
+            height: 90px;
+            background: var(--accent-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 3rem;
+            color: var(--accent-dark);
+        }
+        .profile-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        .profile-email {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            gap: 16px;
+        }
+        .stat-number {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .stat-label {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-light);
+            font-weight: 500;
+        }
+
+        .hidden {
+            display: none;
+        }
+        .empty-favorites, .empty-feed {
+            text-align: center;
+            padding: 40px 20px;
+            background: var(--bg-card);
+            border-radius: 28px;
+            margin-top: 20px;
+        }
+        .loading-indicator {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+<div class="mobile-container">
+    <div class="app-header">
+        <div class="logo-badge">
+            <div class="logo">BeakBook</div>
+            <button class="theme-btn" id="themeToggleBtn"><i class="fas fa-moon"></i><span>Тема</span></button>
+        </div>
+        <div class="subhead">
+            <span><i class="fas fa-map-marker-alt"></i> Оренбургская область</span>
+            <span><i class="fas fa-feather-alt"></i> 90+ видов под охраной</span>
+        </div>
+    </div>
+
+    <div class="main-content" id="dynamicContent">
+        <!-- Лента -->
+        <div id="feedSection">
+            <div class="stats-header">
+                <h2>Журнал</h2>
+                <div class="stats-counters">
+                    <div class="stat-chip"><i class="fas fa-binoculars"></i><span class="count" id="feedCountBadge">0</span><span class="label">всего</span></div>
+                    <div class="stat-chip favorite-chip"><i class="fas fa-star"></i><span class="count" id="feedFavCountBadge">0</span><span class="label">избр.</span></div>
+                </div>
+            </div>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Поиск по виду или месту...">
+            </div>
+            <div id="observationsList"></div>
+            <div id="emptyFeedMessage" class="empty-feed hidden">
+                <i class="fas fa-binoculars" style="font-size: 2.5rem; opacity: 0.5; margin-bottom: 12px;"></i>
+                <p style="font-weight: 600;">Пока нет наблюдений</p>
+                <p class="subhead">Нажмите «➕ Новое» и добавьте первую птицу</p>
+            </div>
+        </div>
+
+        <!-- Избранное -->
+        <div id="favoritesSection" class="hidden">
+            <div class="stats-header">
+                <h2><i class="fas fa-star" style="color: var(--favorite);"></i> Избранное</h2>
+                <div class="stat-chip favorite-chip"><i class="fas fa-star"></i><span class="count" id="favPageCountBadge">0</span><span class="label">записей</span></div>
+            </div>
+            <div id="favoritesList"></div>
+            <div id="emptyFavoritesMessage" class="empty-favorites hidden">
+                <i class="fas fa-star" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                <p style="margin-top: 12px; font-weight: 600;">Нет избранных наблюдений</p>
+                <p class="subhead">Добавьте птиц в избранное ✨</p>
+            </div>
+        </div>
+
+        <!-- Добавление -->
+        <div id="addSection" class="hidden">
+            <div class="card">
+                <h2 style="font-weight: 700; font-size: 1.4rem;">Новая встреча</h2>
+                <div class="form-group">
+                    <label><i class="fas fa-dove"></i> Вид птицы *</label>
+                    <div class="select-wrapper">
+                        <select id="birdSpeciesSelect">
+                            <option value="">-- Выберите вид птицы --</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div id="birdInfoContainer" style="margin-top: 10px;"></div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-location-dot"></i> Локация</label>
+                    <input type="text" id="locationInput" placeholder="Национальный парк, берег реки...">
+                    <div class="location-auto" id="autoLocationBtn">
+                        <i class="fas fa-crosshairs"></i> Определить моё местоположение
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-image"></i> Фотография птицы</label>
+                    <div class="photo-upload">
+                        <img id="photoPreview" class="photo-preview" style="display: none;">
+                        <div id="photoPlaceholder" class="photo-preview" style="display: flex; align-items: center; justify-content: center;"><i class="fas fa-camera" style="font-size: 2rem;"></i></div>
+                        <input type="file" id="photoInput" accept="image/*" style="display: none;">
+                        <button type="button" class="upload-btn" id="uploadPhotoBtn"><i class="fas fa-upload"></i> Загрузить</button>
+                        <button type="button" class="remove-photo-btn" id="removePhotoBtn" style="display: none;"><i class="fas fa-trash-alt"></i> Удалить</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-pen"></i> Заметки</label>
+                    <textarea rows="2" id="notesInput" placeholder="Активность, особенности..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-calendar"></i> Дата</label>
+                    <input type="date" id="dateInput">
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="saveObservationBtn"><i class="fas fa-check"></i> Сохранить</button>
+                    <button class="btn btn-secondary" id="cancelAddBtn">Отмена</button>
+                </div>
+            </div>
+            <div class="card">
+                <strong><i class="fas fa-feather-alt"></i> Редкие виды региона</strong>
+                <div class="rare-species-container" id="rareSpeciesTags"></div>
+            </div>
+        </div>
+
+        <!-- Гид -->
+        <div id="guideSection" class="hidden">
+            <h2 style="font-weight: 700; font-size: 1.4rem; margin-bottom: 16px;">Птицы Оренбуржья</h2>
+            <div class="species-list" id="speciesListContainer"></div>
+        </div>
+
+        <!-- Профиль -->
+        <div id="profileSection" class="hidden">
+            <div class="profile-header">
+                <div class="profile-avatar"><i class="fas fa-tree"></i></div>
+                <div class="profile-name">Натуралист</div>
+                <div class="profile-email">birdlover@beakbook.ru</div>
+                <div class="stat-row">
+                    <div class="stat-item"><div class="stat-number" id="profileObsCount">0</div><div class="stat-label">наблюдений</div></div>
+                    <div class="stat-item"><div class="stat-number" id="profileSpeciesCount">0</div><div class="stat-label">видов</div></div>
+                    <div class="stat-item"><div class="stat-number" id="profileFavCount">0</div><div class="stat-label">в избранном</div></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="info-row"><span><i class="fas fa-egg"></i> В сообществе с</span><span>март 2025</span></div>
+                <div class="info-row"><span><i class="fas fa-feather-alt"></i> Любимая птица</span><span id="favBird">—</span></div>
+                <div class="info-row"><span><i class="fas fa-medal"></i> Статус</span><span>🌿 Орнитолог-любитель</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <img id="modalImage" class="modal-img" style="display: none;">
+            <h3 id="modalBirdName"></h3>
+            <div class="modal-location" style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">
+                <span><i class="fas fa-map-pin"></i> <span id="modalLocation"></span></span>
+                <span><i class="far fa-calendar-alt"></i> <span id="modalDate"></span></span>
+            </div>
+            <div class="modal-notes" id="modalNotes" style="background: var(--bg-card-alt); padding: 16px; border-radius: 20px;"></div>
+            <button class="modal-close" onclick="closeModal()">Закрыть</button>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-tab active" data-tab="feedTab"><i class="fas fa-list-ul"></i><span>Лента</span></div>
+        <div class="nav-tab" data-tab="guideTab"><i class="fas fa-compass"></i><span>Гид</span></div>
+        <div class="nav-tab" data-tab="addTab"><i class="fas fa-plus-circle"></i><span>Новое</span></div>
+        <div class="nav-tab" data-tab="favoritesTab"><i class="fas fa-star"></i><span>Избранное</span></div>
+        <div class="nav-tab" data-tab="profileTab"><i class="fas fa-user"></i><span>Профиль</span></div>
+    </div>
+</div>
+
+<script>
+    // Данные видов (сокращённый список для примера)
+    const birdSpeciesData = [
+        { name: "Авдотка (Burhinus oedicnemus)", family: "Авдотковые", status: "исчезающий", statusClass: "status-endangered", statusText: "Исчезающий вид" },
+        { name: "Балобан (Falco cherrug)", family: "Соколиные", status: "исчезающий", statusClass: "status-endangered", statusText: "Исчезающий вид" },
+        { name: "Беркут (Aquila chrysaetos)", family: "Ястребиные", status: "редкий", statusClass: "status-rare", statusText: "Редкий вид" },
+        { name: "Дрофа (Otis tarda)", family: "Дрофиные", status: "исчезающий", statusClass: "status-endangered", statusText: "Исчезающий вид" },
+        { name: "Степной орёл (Aquila nipalensis)", family: "Ястребиные", status: "исчезающий", statusClass: "status-endangered", statusText: "Исчезающий вид" },
+        { name: "Розовый скворец (Sturnus roseus)", family: "Скворцовые", status: "редкий", statusClass: "status-rare", statusText: "Редкий вид" },
+        { name: "Филин (Bubo bubo)", family: "Совиные", status: "редкий", statusClass: "status-rare", statusText: "Редкий вид" },
+        { name: "Чёрный аист (Ciconia nigra)", family: "Аистовые", status: "редкий", statusClass: "status-rare", statusText: "Редкий вид" },
+        { name: "Вяхирь", family: "Голубиные", status: "обычный", statusClass: "status-common", statusText: "Обычный вид" }
+    ];
+
+    let observations = [];
+    let currentPhotoData = null;
+    const STORAGE_KEY = 'beakbook_observations';
+    let renderScheduled = false;
+
+    function loadData() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if(stored) observations = JSON.parse(stored);
+        else observations = [
+            { id: 1001, birdName: "Балобан (Falco cherrug)", family: "Соколиные", status: "исчезающий", statusText: "Исчезающий вид", statusClass: "status-endangered", location: "Акбулакский район", notes: "Охота на жаворонков, активный полёт.", date: new Date().toISOString().split('T')[0], timestamp: Date.now() - 172800000, favorite: true, photo: null },
+            { id: 1002, birdName: "Степной орёл (Aquila nipalensis)", family: "Ястребиные", status: "исчезающий", statusText: "Исчезающий вид", statusClass: "status-endangered", location: "Светлинский заказник", notes: "Парил над степью, высматривал добычу", date: new Date(Date.now() - 86400000).toISOString().split('T')[0], timestamp: Date.now() - 86400000, favorite: false, photo: null },
+            { id: 1003, birdName: "Розовый скворец (Sturnus roseus)", family: "Скворцовые", status: "редкий", statusText: "Редкий вид", statusClass: "status-rare", location: "Оренбург", notes: "Стая около 50 птиц, кормились на земле", date: new Date().toISOString().split('T')[0], timestamp: Date.now(), favorite: true, photo: null }
+        ];
+        renderAll();
+        updateStats();
+    }
+
+    function save() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(observations));
+        if (renderScheduled) return;
+        renderScheduled = true;
+        requestAnimationFrame(() => {
+            renderAll();
+            updateStats();
+            renderScheduled = false;
+        });
+    }
+
+    let searchQuery = "";
+    let currentPage = 0;
+    let isLoading = false;
+    let allFiltered = [];
+    const PAGE_SIZE = 20;
+
+    function truncateText(text, maxLength = 100) {
+        if (!text) return '';
+        if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength - 3) + '...';
+    }
+
+    function compressImage(dataUrl, maxWidth = 400, maxHeight = 400, quality = 0.6) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                let width = img.width;
+                let height = img.height;
+                if (width > maxWidth) {
+                    height = (height * maxWidth) / width;
+                    width = maxWidth;
+                }
+                if (height > maxHeight) {
+                    width = (width * maxHeight) / height;
+                    height = maxHeight;
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                resolve(canvas.toDataURL('image/jpeg', quality));
+            };
+            img.src = dataUrl;
+        });
+    }
+
+    function renderFeed() {
+        const container = document.getElementById('observationsList');
+        const emptyMsg = document.getElementById('emptyFeedMessage');
+        allFiltered = observations.filter(o => {
+            if (searchQuery && !o.birdName.toLowerCase().includes(searchQuery) && !(o.location && o.location.toLowerCase().includes(searchQuery))) return false;
+            return true;
+        }).sort((a,b)=>b.timestamp-a.timestamp);
+        if(!allFiltered.length) {
+            container.innerHTML = '';
+            emptyMsg.classList.remove('hidden');
+            return;
+        }
+        emptyMsg.classList.add('hidden');
+        const toShow = allFiltered.slice(0, (currentPage+1)*PAGE_SIZE);
+        container.innerHTML = toShow.map(obs => renderObservationCard(obs)).join('');
+        attachCardEvents();
+        if (toShow.length < allFiltered.length && !isLoading) {
+            isLoading = true;
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    observer.disconnect();
+                    currentPage++;
+                    renderFeed();
+                    isLoading = false;
+                }
+            });
+            const sentinel = document.createElement('div');
+            sentinel.className = 'loading-indicator';
+            sentinel.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Загрузка...';
+            container.appendChild(sentinel);
+            observer.observe(sentinel);
+        }
+    }
+
+    function renderFavorites() {
+        const favorites = observations.filter(o => o.favorite);
+        const container = document.getElementById('favoritesList');
+        const emptyMsg = document.getElementById('emptyFavoritesMessage');
+        const countBadge = document.getElementById('favPageCountBadge');
+        countBadge.innerText = favorites.length;
+        if(!favorites.length) { container.innerHTML = ''; emptyMsg.classList.remove('hidden'); return; }
+        emptyMsg.classList.add('hidden');
+        container.innerHTML = favorites.sort((a,b)=>b.timestamp-a.timestamp).map(obs => renderObservationCard(obs)).join('');
+        attachCardEvents();
+    }
+
+    function renderObservationCard(obs) {
+        const statusClass = obs.statusClass || 'status-rare';
+        const statusText = obs.statusText || 'Редкий вид';
+        const hasPhoto = obs.photo && obs.photo.startsWith('data:image');
+        return `
+            <div class="observation-card ${obs.favorite ? 'favorited' : ''}" data-id="${obs.id}">
+                <div class="bird-row">
+                    <div class="bird-icon"><i class="fas fa-feather"></i></div>
+                    <div class="bird-details">
+                        <div class="bird-name">${escapeHtml(obs.birdName)}</div>
+                        <div class="meta-row">
+                            <span class="meta-item"><i class="fas fa-map-pin"></i> ${escapeHtml(obs.location || 'не указано')}</span>
+                            <span class="date-tag"><i class="far fa-calendar-alt"></i> ${obs.date || 'сегодня'}</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="family-badge"><i class="fas fa-leaf"></i> ${escapeHtml(obs.family || '—')}</span>
+                            <span class="status-badge ${statusClass}"><i class="fas fa-shield-alt"></i> ${statusText}</span>
+                        </div>
+                    </div>
+                    ${hasPhoto ? `<img src="${obs.photo}" class="photo-preview-card" loading="lazy" onclick="event.stopPropagation()">` : `<div class="photo-placeholder-card"><i class="fas fa-camera"></i></div>`}
+                </div>
+                ${obs.notes ? `<div class="notes-preview">${escapeHtml(truncateText(obs.notes, 100))}</div>` : ''}
+                <div class="card-actions">
+                    <button class="action-icon favorite-btn ${obs.favorite ? 'favorite-active' : ''}" data-id="${obs.id}">
+                        <i class="fas fa-star"></i> ${obs.favorite ? 'В избранном' : 'В избранное'}
+                    </button>
+                    <button class="action-icon delete-active" data-id="${obs.id}">
+                        <i class="fas fa-trash-alt"></i> Удалить
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    function openModal(obs) {
+        document.getElementById('modalBirdName').innerText = obs.birdName;
+        document.getElementById('modalLocation').innerText = obs.location || 'не указано';
+        document.getElementById('modalDate').innerText = obs.date || 'сегодня';
+        let modalNotes = obs.notes || 'Нет заметок';
+        modalNotes = `<strong>Семейство:</strong> ${obs.family || '—'}<br><strong>Статус:</strong> ${obs.statusText || '—'}<br><br>${modalNotes}`;
+        document.getElementById('modalNotes').innerHTML = modalNotes;
+        const modalImg = document.getElementById('modalImage');
+        if(obs.photo && obs.photo.startsWith('data:image')) {
+            modalImg.src = obs.photo;
+            modalImg.style.display = 'block';
+        } else {
+            modalImg.style.display = 'none';
+        }
+        document.getElementById('modal').classList.add('active');
+    }
+
+    function closeModal() { document.getElementById('modal').classList.remove('active'); }
+
+    function attachCardEvents() {
+        document.querySelectorAll('.observation-card').forEach(card => {
+            card.removeEventListener('click', handleCardClick);
+            card.addEventListener('click', handleCardClick);
+        });
+        document.querySelectorAll('.favorite-btn').forEach(btn => {
+            btn.removeEventListener('click', handleFavorite);
+            btn.addEventListener('click', handleFavorite);
+        });
+        document.querySelectorAll('.delete-active').forEach(btn => {
+            btn.removeEventListener('click', handleDelete);
+            btn.addEventListener('click', handleDelete);
+        });
+    }
+
+    function handleCardClick(e) {
+        if(e.target.closest('.favorite-btn') || e.target.closest('.delete-active')) return;
+        const id = parseInt(e.currentTarget.dataset.id);
+        const obs = observations.find(o => o.id === id);
+        if(obs) openModal(obs);
+    }
+
+    function handleFavorite(e) {
+        e.stopPropagation();
+        const id = parseInt(e.currentTarget.dataset.id);
+        const obs = observations.find(o => o.id === id);
+        if(obs) { obs.favorite = !obs.favorite; save(); }
+    }
+
+    function handleDelete(e) {
+        e.stopPropagation();
+        const id = parseInt(e.currentTarget.dataset.id);
+        observations = observations.filter(o => o.id !== id);
+        save();
+    }
+
+    function renderAll() {
+        currentPage = 0;
+        renderFeed();
+        renderFavorites();
+    }
+
+    function updateStats() {
+        const total = observations.length;
+        const favorites = observations.filter(o => o.favorite).length;
+        const uniqueSpecies = new Set(observations.map(o => o.birdName)).size;
+        document.getElementById('feedCountBadge').innerText = total;
+        document.getElementById('feedFavCountBadge').innerText = favorites;
+        document.getElementById('profileObsCount').innerText = total;
+        document.getElementById('profileSpeciesCount').innerText = uniqueSpecies;
+        document.getElementById('profileFavCount').innerText = favorites;
+        if(observations.length) {
+            let freq = {}; observations.forEach(o=>freq[o.birdName]=(freq[o.birdName]||0)+1);
+            let fav = Object.keys(freq).reduce((a,b)=>freq[a]>freq[b]?a:b);
+            document.getElementById('favBird').innerText = fav.split('(')[0].trim();
+        }
+    }
+
+    async function addObservation(birdName, birdFamily, birdStatus, birdStatusText, birdStatusClass, location, notes, date, photo) {
+        if(!birdName) { alert("Выберите вид птицы"); return false; }
+        let compressedPhoto = null;
+        if(photo) compressedPhoto = await compressImage(photo, 400, 400, 0.6);
+        observations.unshift({
+            id: Date.now(),
+            birdName, family: birdFamily, status: birdStatus, statusText: birdStatusText, statusClass: birdStatusClass,
+            location: location.trim() || '—', notes: notes.trim(),
+            date: date || new Date().toISOString().split('T')[0], timestamp: Date.now(), favorite: false,
+            photo: compressedPhoto
+        });
+        save();
+        return true;
+    }
+
+    function populateBirdSelect() {
+        const select = document.getElementById('birdSpeciesSelect');
+        select.innerHTML = '<option value="">-- Выберите вид птицы --</option>';
+        birdSpeciesData.forEach(bird => {
+            const option = document.createElement('option');
+            option.value = bird.name;
+            option.textContent = bird.name;
+            option.dataset.family = bird.family;
+            option.dataset.status = bird.status;
+            option.dataset.statusText = bird.statusText;
+            option.dataset.statusClass = bird.statusClass;
+            select.appendChild(option);
+        });
+        select.addEventListener('change', function() {
+            const opt = this.options[this.selectedIndex];
+            const family = opt.dataset.family;
+            const statusText = opt.dataset.statusText;
+            const statusClass = opt.dataset.statusClass;
+            const container = document.getElementById('birdInfoContainer');
+            if(family && statusText) {
+                container.innerHTML = `
+                    <div class="info-badge"><i class="fas fa-leaf"></i> Семейство: ${family}</div>
+                    <div class="status-badge-large ${statusClass}"><i class="fas fa-shield-alt"></i> ${statusText}</div>
+                `;
+            } else container.innerHTML = '';
+        });
+    }
+
+    function setupPhotoUpload() {
+        const photoInput = document.getElementById('photoInput');
+        const uploadBtn = document.getElementById('uploadPhotoBtn');
+        const removeBtn = document.getElementById('removePhotoBtn');
+        const preview = document.getElementById('photoPreview');
+        const placeholder = document.getElementById('photoPlaceholder');
+        uploadBtn.addEventListener('click', () => photoInput.click());
+        photoInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if(file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = async function(ev) {
+                    const compressed = await compressImage(ev.target.result, 400, 400, 0.6);
+                    currentPhotoData = compressed;
+                    preview.src = compressed;
+                    preview.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    removeBtn.style.display = 'inline-flex';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        removeBtn.addEventListener('click', () => {
+            currentPhotoData = null;
+            preview.style.display = 'none';
+            placeholder.style.display = 'flex';
+            removeBtn.style.display = 'none';
+            photoInput.value = '';
+        });
+    }
+
+    const speciesList = birdSpeciesData.map(b => ({ name: b.name, desc: `Семейство: ${b.family} — ${b.statusText}` }));
+    function loadGuide() {
+        document.getElementById('speciesListContainer').innerHTML = speciesList.map(sp => `
+            <div class="species-item">
+                <div class="species-header">${escapeHtml(sp.name)}</div>
+                <div class="species-desc">${escapeHtml(sp.desc)}</div>
+            </div>
+        `).join('');
+    }
+
+    const rareBirds = birdSpeciesData.slice(0,5).map(b => b.name.split(' ')[0]);
+    function loadRareTags() {
+        const container = document.getElementById('rareSpeciesTags');
+        container.innerHTML = rareBirds.map(b => `<span class="rare-tag" data-bird="${b}">${b}</span>`).join('');
+        document.querySelectorAll('.rare-tag').forEach(tag => {
+            tag.addEventListener('click', () => {
+                const bird = birdSpeciesData.find(b => b.name.startsWith(tag.dataset.bird));
+                if(bird) {
+                    const select = document.getElementById('birdSpeciesSelect');
+                    for(let i=0; i<select.options.length; i++) {
+                        if(select.options[i].value === bird.name) {
+                            select.selectedIndex = i;
+                            select.dispatchEvent(new Event('change'));
+                            break;
+                        }
+                    }
+                }
+                setActiveTab('addTab');
+            });
+        });
+    }
+
+    document.getElementById('autoLocationBtn')?.addEventListener('click', () => {
+        if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                () => document.getElementById('locationInput').value = 'Оренбургская область, Россия',
+                () => document.getElementById('locationInput').value = 'Оренбургская область'
+            );
+        } else document.getElementById('locationInput').value = 'Оренбургская область';
+    });
+
+    const sections = { feedTab: document.getElementById('feedSection'), guideTab: document.getElementById('guideSection'), addTab: document.getElementById('addSection'), favoritesTab: document.getElementById('favoritesSection'), profileTab: document.getElementById('profileSection') };
+    function setActiveTab(tabId) {
+        Object.values(sections).forEach(s => s?.classList.add('hidden'));
+        sections[tabId]?.classList.remove('hidden');
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabId));
+        if(tabId === 'guideTab') loadGuide();
+        if(tabId === 'addTab') document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+        if(tabId === 'favoritesTab') renderFavorites();
+        if(tabId === 'feedTab') { currentPage = 0; renderFeed(); }
+    }
+
+    document.querySelectorAll('.nav-tab').forEach(tab => tab.addEventListener('click', () => setActiveTab(tab.dataset.tab)));
+
+    document.getElementById('saveObservationBtn')?.addEventListener('click', async () => {
+        const select = document.getElementById('birdSpeciesSelect');
+        const opt = select.options[select.selectedIndex];
+        const success = await addObservation(opt.value, opt.dataset.family, opt.dataset.status, opt.dataset.statusText, opt.dataset.statusClass,
+            document.getElementById('locationInput').value, document.getElementById('notesInput').value, document.getElementById('dateInput').value, currentPhotoData);
+        if(success) {
+            select.selectedIndex = 0;
+            document.getElementById('locationInput').value = '';
+            document.getElementById('notesInput').value = '';
+            document.getElementById('birdInfoContainer').innerHTML = '';
+            currentPhotoData = null;
+            document.getElementById('photoPreview').style.display = 'none';
+            document.getElementById('photoPlaceholder').style.display = 'flex';
+            document.getElementById('removePhotoBtn').style.display = 'none';
+            document.getElementById('photoInput').value = '';
+            setActiveTab('feedTab');
+        }
+    });
+    document.getElementById('cancelAddBtn')?.addEventListener('click', () => setActiveTab('feedTab'));
+    document.getElementById('searchInput')?.addEventListener('input', e => { searchQuery = e.target.value.toLowerCase(); currentPage = 0; renderFeed(); });
+    document.getElementById('themeToggleBtn')?.addEventListener('click', () => {
+        document.body.classList.toggle('dark');
+        const icon = document.querySelector('#themeToggleBtn i');
+        icon.className = document.body.classList.contains('dark') ? 'fas fa-sun' : 'fas fa-moon';
+    });
+    document.getElementById('modal')?.addEventListener('click', (e) => { if(e.target === document.getElementById('modal')) closeModal(); });
+
+    populateBirdSelect();
+    setupPhotoUpload();
+    loadData();
+    loadRareTags();
+    setActiveTab('feedTab');
+    function escapeHtml(s) { return s?.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '&gt;':'&gt;' }[m])) || ''; }
+</script>
+</body>
+</html>
