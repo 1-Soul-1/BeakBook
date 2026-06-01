@@ -29,7 +29,7 @@
             --header-bg: rgba(18, 20, 18, 0.96); --nav-bg: rgba(18, 20, 18, 0.96); --shadow-card: 0 4px 12px rgba(0,0,0,0.2);
         }
         body { background-color: var(--bg-primary); font-family: 'Inter', sans-serif; color: var(--text-primary); line-height: 1.45; transition: background-color 0.2s ease, color 0.2s ease; }
-        .mobile-container { max-width: 500px; width: 100%; margin: 0 auto; background: var(--bg-primary); min-height: 100vh; display: flex; flex-direction: column; }
+        .mobile-container { max-width: 500px; width: 100%; margin: 0 auto; background: var(--bg-primary); min-height: 100vh; display: flex; flex-direction: column; position: relative; }
         .app-header { padding: 20px 20px 12px; background: var(--header-bg); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-light); position: sticky; top: 0; z-index: 10; }
         .logo-badge { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 12px; }
         .logo { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.3px; color: var(--accent-dark); }
@@ -38,7 +38,7 @@
         .theme-btn:active { transform: scale(0.97); }
         .theme-btn i { font-size: 1rem; color: var(--accent); }
         .subhead { font-size: 0.75rem; color: var(--text-secondary); display: flex; gap: 14px; flex-wrap: wrap; font-weight: 500; margin-top: 4px; }
-        .main-content { flex: 1; padding: 20px 20px 32px; }
+        .main-content { flex: 1; padding: 20px 20px 80px 20px; }
         .stats-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
         .stats-header h2 { font-weight: 700; font-size: 1.5rem; color: var(--text-primary); letter-spacing: -0.2px; }
         .stats-counters { display: flex; gap: 10px; }
@@ -54,7 +54,6 @@
         body.dark .btn-primary { color: #121412; }
         .btn-primary:active { background: var(--accent-dark); transform: scale(0.97); }
         .btn-secondary { background: transparent; border: 1.5px solid var(--border-light); color: var(--text-secondary); flex: 1; font-weight: 600; }
-        .btn-danger { background: var(--danger-light); color: var(--danger); border: none; }
         .search-bar { background: var(--bg-card); border-radius: 48px; padding: 12px 18px; display: flex; align-items: center; gap: 12px; margin-bottom: 20px; border: 1px solid var(--border-light); }
         .search-bar i { color: var(--text-muted); font-size: 1rem; }
         .search-bar input { flex: 1; background: none; border: none; outline: none; font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
@@ -100,8 +99,8 @@
         .action-icon:hover { transform: scale(0.96); }
         .form-group { margin-bottom: 20px; }
         .form-group label { font-weight: 600; font-size: 0.8rem; margin-bottom: 8px; display: block; color: var(--text-secondary); }
-        input, textarea, select { width: 100%; border-radius: 24px; border: 1.5px solid var(--border-light); padding: 14px 18px; font-family: 'Inter', sans-serif; font-size: 0.9rem; background: var(--bg-input); color: var(--text-primary); transition: 0.2s; font-weight: 500; }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-light); }
+        input, textarea { width: 100%; border-radius: 24px; border: 1.5px solid var(--border-light); padding: 14px 18px; font-family: 'Inter', sans-serif; font-size: 0.9rem; background: var(--bg-input); color: var(--text-primary); transition: 0.2s; font-weight: 500; }
+        input:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-light); }
         .autocomplete-wrapper { position: relative; width: 100%; }
         .autocomplete-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 20px; max-height: 200px; overflow-y: auto; z-index: 100; margin-top: 4px; box-shadow: var(--shadow-card); display: none; }
         .autocomplete-suggestions.show { display: block; }
@@ -128,8 +127,6 @@
         .location-auto { background: var(--accent-light); border-radius: 24px; padding: 10px 14px; margin-top: 10px; font-size: 0.75rem; font-weight: 600; color: var(--accent-dark); display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
         .rare-species-container { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
         .rare-tag { background: var(--accent-light); padding: 6px 14px; border-radius: 30px; font-size: 0.8rem; font-weight: 600; color: var(--accent-dark); cursor: pointer; border: 1px solid var(--border-light); }
-        .tips-container { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
-        .tip-item { font-size: 0.75rem; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); }
         .bottom-nav { position: sticky; bottom: 0; background: var(--nav-bg); backdrop-filter: blur(20px); display: flex; justify-content: space-evenly; align-items: center; padding: 8px 12px 22px; border-top: 1px solid var(--border-light); z-index: 20; }
         .nav-tab { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.65rem; font-weight: 600; color: var(--text-muted); cursor: pointer; flex: 1; text-align: center; }
         .nav-tab i { font-size: 1.3rem; }
@@ -140,7 +137,8 @@
         .modal-img { width: 100%; max-height: 250px; object-fit: cover; border-radius: 20px; margin-bottom: 16px; }
         .modal-notes { background: var(--bg-card-alt); padding: 16px; border-radius: 20px; font-size: 0.9rem; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; color: var(--text-secondary); }
         .modal-close { width: 100%; margin-top: 16px; background: var(--accent-light); border: none; padding: 12px; border-radius: 40px; font-weight: 600; color: var(--accent-dark); cursor: pointer; }
-        .species-list-guide { max-height: calc(100vh - 180px); overflow-y: auto; scrollbar-width: thin; }
+        .guide-wrapper { height: calc(100vh - 160px); overflow-y: auto; padding-bottom: 20px; }
+        .species-list-guide { padding-bottom: 20px; }
         .species-item { padding: 16px 0; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .species-header { font-weight: 700; margin-bottom: 6px; }
         .species-desc { font-size: 0.75rem; color: var(--text-secondary); }
@@ -164,7 +162,7 @@
         </div>
         <div class="subhead">
             <span><i class="fas fa-map-marker-alt"></i> Оренбургская область</span>
-            <span><i class="fas fa-feather-alt"></i> 70+ видов под охраной</span>
+            <span><i class="fas fa-feather-alt"></i> 90+ видов под охраной</span>
         </div>
     </div>
 
@@ -178,7 +176,7 @@
             <div id="emptyFeedMessage" class="empty-feed hidden"><i class="fas fa-binoculars" style="font-size: 2.5rem; opacity: 0.5; margin-bottom: 12px;"></i><p style="font-weight: 600;">Пока нет наблюдений</p><p>Нажмите «➕ Новое» и добавьте первую птицу</p></div>
         </div>
 
-        <!-- Избранное (только поиск и сортировка) -->
+        <!-- Избранное -->
         <div id="favoritesSection" class="hidden">
             <div class="stats-header"><h2><i class="fas fa-star" style="color: var(--favorite);"></i> Избранное</h2><div class="stat-chip favorite-chip"><i class="fas fa-star"></i><span class="count" id="favPageCountBadge">0</span><span class="label">записей</span></div></div>
             <div class="search-bar search-small"><i class="fas fa-search"></i><input type="text" id="favoritesSearchInput" placeholder="Поиск в избранном..."><button class="clear-search hidden" id="clearFavSearchBtn"><i class="fas fa-times-circle"></i></button></div>
@@ -187,7 +185,7 @@
             <div id="emptyFavoritesMessage" class="empty-favorites hidden"><i class="fas fa-star" style="font-size: 2.5rem; opacity: 0.5;"></i><p>Нет избранных наблюдений</p><p>Добавьте птиц в избранное</p></div>
         </div>
 
-        <!-- Форма добавления -->
+        <!-- Форма добавления (без "Советы наблюдателю") -->
         <div id="addSection" class="hidden">
             <div class="card">
                 <h2 style="font-weight: 700; font-size: 1.4rem;">Новая встреча</h2>
@@ -210,17 +208,18 @@
                 <div class="action-buttons"><button class="btn btn-primary" id="saveObservationBtn"><i class="fas fa-check"></i> Сохранить</button><button class="btn btn-secondary" id="cancelAddBtn">Отмена</button></div>
             </div>
             <div class="card"><strong><i class="fas fa-feather-alt"></i> Редкие виды региона</strong><div class="rare-species-container" id="rareSpeciesTags"></div></div>
-            <div class="card"><strong><i class="fas fa-lightbulb"></i> Советы наблюдателю</strong><div class="tips-container"><div class="tip-item"><i class="fas fa-clock"></i> Лучшее время для наблюдений — раннее утро</div><div class="tip-item"><i class="fas fa-binoculars"></i> Берите с собой блокнот и бинокль</div><div class="tip-item"><i class="fas fa-microphone-alt"></i> Учитесь различать голоса птиц</div><div class="tip-item"><i class="fas fa-leaf"></i> Не беспокойте птиц во время гнездования</div></div></div>
         </div>
 
         <!-- Гид -->
         <div id="guideSection" class="hidden">
             <h2 style="font-weight: 700; font-size: 1.4rem; margin-bottom: 16px;">Птицы Оренбуржья</h2>
             <div class="search-bar search-small"><i class="fas fa-search"></i><input type="text" id="guideSearchInput" placeholder="Поиск по виду или семейству..."><button class="clear-search hidden" id="clearGuideSearchBtn"><i class="fas fa-times-circle"></i></button></div>
-            <div class="species-list-guide" id="speciesListContainer"></div>
+            <div class="guide-wrapper">
+                <div class="species-list-guide" id="speciesListContainer"></div>
+            </div>
         </div>
 
-        <!-- Профиль (пустой, только заглушка) -->
+        <!-- Профиль (заглушка) -->
         <div id="profileSection" class="hidden">
             <div class="card" style="text-align: center; padding: 40px 20px;">
                 <i class="fas fa-dove" style="font-size: 3rem; color: var(--accent); margin-bottom: 16px;"></i>
@@ -230,7 +229,7 @@
         </div>
     </div>
 
-    <!-- Модальные окна (удаление, редактирование) -->
+    <!-- Модальные окна -->
     <div id="modal" class="modal"><div class="modal-content"><img id="modalImage" class="modal-img" style="display: none;"><h3 id="modalBirdName"></h3><div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;"><span><i class="fas fa-map-pin"></i> <span id="modalLocation"></span></span><span style="margin-left: 12px;"><i class="far fa-calendar-alt"></i> <span id="modalDate"></span></span></div><div class="modal-notes" id="modalNotes"></div><button class="modal-close" onclick="closeModal()">Закрыть</button></div></div>
     <div id="confirmModal" class="modal"><div class="modal-content" style="text-align: center;"><i class="fas fa-trash-alt" style="font-size: 2rem; color: var(--danger); margin-bottom: 12px;"></i><h3>Удалить наблюдение?</h3><p style="margin: 16px 0; color: var(--text-secondary);">Это действие нельзя отменить.</p><div class="action-buttons" style="margin-top: 16px;"><button class="btn btn-secondary" id="confirmCancelBtn">Отмена</button><button class="btn btn-primary" id="confirmOkBtn" style="background: var(--danger);">Удалить</button></div></div></div>
     <div id="editModal" class="modal"><div class="modal-content"><h3>Редактирование наблюдения</h3><div class="form-group"><label><i class="fas fa-location-dot"></i> Локация</label><input type="text" id="editLocation" placeholder="Локация"></div><div class="form-group"><label><i class="fas fa-calendar"></i> Дата</label><input type="date" id="editDate"></div><div class="form-group"><label><i class="fas fa-pen"></i> Заметки</label><textarea rows="3" id="editNotes" placeholder="Заметки"></textarea></div><div class="form-group"><label><i class="fas fa-image"></i> Фото</label><div class="photo-upload"><img id="editPhotoPreview" class="photo-preview" style="display: none;"><div id="editPhotoPlaceholder" class="photo-preview" style="display: flex; align-items: center; justify-content: center;"><i class="fas fa-camera"></i></div><input type="file" id="editPhotoInput" accept="image/jpeg,image/png,image/webp" style="display: none;"><button type="button" class="upload-btn" id="editUploadPhotoBtn"><i class="fas fa-upload"></i> Загрузить</button><button type="button" class="remove-photo-btn" id="editRemovePhotoBtn" style="display: none;"><i class="fas fa-trash-alt"></i> Удалить</button></div></div><div class="action-buttons"><button class="btn btn-secondary" id="editCancelBtn">Отмена</button><button class="btn btn-primary" id="editSaveBtn">Сохранить</button></div></div></div>
@@ -377,11 +376,19 @@
     function loadData() {
         const stored = localStorage.getItem('beakbook_observations');
         if(stored) observations = JSON.parse(stored);
-        else observations = [
-            { id: 1001, birdName: "Балобан (Falco cherrug)", family: "Соколиные", status: "исчезающий", statusText: "Исчезающий вид", statusClass: "status-endangered", location: "Акбулакский район", notes: "Охота на жаворонков, активный полёт.", date: new Date().toISOString().split('T')[0], timestamp: Date.now() - 172800000, favorite: true, photo: null },
-            { id: 1002, birdName: "Степной орёл (Aquila nipalensis Hodgson)", family: "Ястребиные", status: "исчезающий", statusText: "Исчезающий вид", statusClass: "status-endangered", location: "Светлинский заказник", notes: "Парил над степью, высматривал добычу", date: new Date(Date.now() - 86400000).toISOString().split('T')[0], timestamp: Date.now() - 86400000, favorite: false, photo: null },
-            { id: 1003, birdName: "Розовый скворец (Sturnus roseus)", family: "Скворцовые", status: "редкий", statusText: "Редкий вид", statusClass: "status-rare", location: "Оренбург", notes: "Стая около 50 птиц, кормились на земле", date: new Date().toISOString().split('T')[0], timestamp: Date.now(), favorite: true, photo: null }
-        ];
+        else {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const dayBefore = new Date(today);
+            dayBefore.setDate(dayBefore.getDate() - 2);
+            
+            observations = [
+                { id: 1001, birdName: "Балобан (Falco cherrug)", family: "Соколиные", status: "исчезающий", statusText: "Исчезающий вид", statusClass: "status-endangered", location: "Акбулакский район", notes: "Охота на жаворонков, активный полёт.", date: dayBefore.toISOString().split('T')[0], timestamp: dayBefore.getTime(), favorite: true, photo: null },
+                { id: 1002, birdName: "Степной орёл (Aquila nipalensis Hodgson)", family: "Ястребиные", status: "исчезающий", statusText: "Исчезающий вид", statusClass: "status-endangered", location: "Светлинский заказник", notes: "Парил над степью, высматривал добычу", date: yesterday.toISOString().split('T')[0], timestamp: yesterday.getTime(), favorite: false, photo: null },
+                { id: 1003, birdName: "Розовый скворец (Sturnus roseus)", family: "Скворцовые", status: "редкий", statusText: "Редкий вид", statusClass: "status-rare", location: "Оренбург", notes: "Стая около 50 птиц, кормились на земле", date: today.toISOString().split('T')[0], timestamp: today.getTime(), favorite: true, photo: null }
+            ];
+        }
         renderAll();
     }
 
@@ -456,7 +463,7 @@
         document.getElementById('birdAutocompleteSuggestions').classList.remove('show');
     }
 
-    // ==================== ОБНОВЛЕНИЕ СЧЁТЧИКОВ ЛЕНТЫ ====================
+    // ==================== ОБНОВЛЕНИЕ СЧЁТЧИКОВ ====================
     function updateFeedStats() {
         const total = observations.length;
         const favorites = observations.filter(o => o.favorite).length;
@@ -470,9 +477,13 @@
             if (!searchQuery) return true;
             return o.birdName.toLowerCase().includes(searchQuery) || (o.location && o.location.toLowerCase().includes(searchQuery));
         });
-        if (feedSort === 'date_desc') filtered.sort((a,b) => b.timestamp - a.timestamp);
-        else if (feedSort === 'date_asc') filtered.sort((a,b) => a.timestamp - b.timestamp);
-        else if (feedSort === 'name_asc') filtered.sort((a,b) => a.birdName.localeCompare(b.birdName));
+        if (feedSort === 'date_desc') {
+            filtered.sort((a,b) => b.timestamp - a.timestamp);
+        } else if (feedSort === 'date_asc') {
+            filtered.sort((a,b) => a.timestamp - b.timestamp);
+        } else if (feedSort === 'name_asc') {
+            filtered.sort((a,b) => a.birdName.localeCompare(b.birdName));
+        }
         return filtered;
     }
 
@@ -515,9 +526,13 @@
         if (favoritesSearchQuery) {
             favorites = favorites.filter(o => o.birdName.toLowerCase().includes(favoritesSearchQuery) || (o.location && o.location.toLowerCase().includes(favoritesSearchQuery)));
         }
-        if (favSort === 'date_desc') favorites.sort((a,b) => b.timestamp - a.timestamp);
-        else if (favSort === 'date_asc') favorites.sort((a,b) => a.timestamp - b.timestamp);
-        else if (favSort === 'name_asc') favorites.sort((a,b) => a.birdName.localeCompare(b.birdName));
+        if (favSort === 'date_desc') {
+            favorites.sort((a,b) => b.timestamp - a.timestamp);
+        } else if (favSort === 'date_asc') {
+            favorites.sort((a,b) => a.timestamp - b.timestamp);
+        } else if (favSort === 'name_asc') {
+            favorites.sort((a,b) => a.birdName.localeCompare(b.birdName));
+        }
         return favorites;
     }
 
@@ -680,11 +695,12 @@
         if(!birdName) { alert("Выберите вид птицы"); return false; }
         let compressedPhoto = null;
         if(photo) compressedPhoto = await compressImage(photo, 400, 400, 0.6);
+        const observationDate = date || new Date().toISOString().split('T')[0];
         observations.unshift({
             id: Date.now(),
             birdName, family: birdFamily, status: birdStatus, statusText: birdStatusText, statusClass: birdStatusClass,
             location: location.trim() || '—', notes: notes.trim(),
-            date: date || new Date().toISOString().split('T')[0], timestamp: Date.now(), favorite: false,
+            date: observationDate, timestamp: Date.now(), favorite: false,
             photo: compressedPhoto
         });
         save();
@@ -749,7 +765,7 @@
         if(tabId === 'feedTab') { currentPage = 0; renderFeed(); }
     }
 
-    // ==================== ИНИЦИАЛИЗАЦИЯ СОБЫТИЙ ====================
+    // ==================== ИНИЦИАЛИЗАЦИЯ ====================
     document.querySelectorAll('.nav-tab').forEach(tab => tab.addEventListener('click', () => setActiveTab(tab.dataset.tab)));
     document.getElementById('saveObservationBtn')?.addEventListener('click', async () => {
         if(!selectedBird) { alert("Выберите вид птицы из списка"); return; }
@@ -835,7 +851,7 @@
     }
 
     document.getElementById('dateInput').max = new Date().toISOString().split('T')[0];
-    // Фото
+    
     function setupPhotoUpload() {
         const photoInput = document.getElementById('photoInput'), uploadBtn = document.getElementById('uploadPhotoBtn'), removeBtn = document.getElementById('removePhotoBtn'), preview = document.getElementById('photoPreview'), placeholder = document.getElementById('photoPlaceholder');
         uploadBtn.addEventListener('click', () => photoInput.click());
@@ -856,6 +872,7 @@
         });
         removeBtn.addEventListener('click', () => { currentPhotoData = null; preview.style.display = 'none'; placeholder.style.display = 'flex'; removeBtn.style.display = 'none'; photoInput.value = ''; });
     }
+    
     function setupEditPhotoUpload() {
         const photoInput = document.getElementById('editPhotoInput'), uploadBtn = document.getElementById('editUploadPhotoBtn'), removeBtn = document.getElementById('editRemovePhotoBtn'), preview = document.getElementById('editPhotoPreview'), placeholder = document.getElementById('editPhotoPlaceholder');
         uploadBtn.addEventListener('click', () => photoInput.click());
@@ -876,10 +893,11 @@
         });
         removeBtn.addEventListener('click', () => { editPhotoData = null; preview.style.display = 'none'; placeholder.style.display = 'flex'; removeBtn.style.display = 'none'; photoInput.value = ''; });
     }
+    
     setupPhotoUpload();
     setupEditPhotoUpload();
 
-    // Инициализация автокомплитов
+    // Инициализация автокомплита
     initAutocomplete('birdAutocompleteInput', 'birdAutocompleteSuggestions', onBirdSelected);
 
     // Инициализация кастомных дропдаунов
