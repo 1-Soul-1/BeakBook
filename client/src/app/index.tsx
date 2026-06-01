@@ -1,88 +1,46 @@
-import { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import BirdList from "@/components/BirdList";
-import WikiList from "@/components/WikiList";
+import { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import BirdList from '../components/BirdList';
+import WikiList from '../components/WikiList';
+import ObservationForm from '../components/ObservationForm';
+
+type Tab = 'birds' | 'wiki' | 'add';
 
 export default function Index() {
-    const [showWiki, setShowWiki] = useState(false);
+  const [activeTab, setActiveTab] = useState<Tab>('birds');
 
-    if (showWiki) {
-        return (
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <TouchableOpacity 
-                        style={styles.backButton}
-                        onPress={() => setShowWiki(false)}
-                    >
-                        <Text style={styles.backButtonText}>Назад</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.headerTitle}>Энциклопедия птиц</Text>
-                    <View style={styles.placeholder} />
-                </View>
-                <WikiList />
-            </View>
-        );
-    }
-
-    return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.headerTitle}>Птицы</Text>
-                <TouchableOpacity 
-                    style={styles.wikiButton}
-                    onPress={() => setShowWiki(true)}
-                >
-                    <Text style={styles.wikiButtonText}>Энциклопедия</Text>
-                </TouchableOpacity>
-            </View>
-            <BirdList />
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.logo}>BeakBook</Text>
+        <View style={styles.tabBar}>
+          <TouchableOpacity onPress={() => setActiveTab('birds')} style={styles.tab}>
+            <Text style={[styles.tabText, activeTab === 'birds' && styles.activeTab]}>Виды</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setActiveTab('wiki')} style={styles.tab}>
+            <Text style={[styles.tabText, activeTab === 'wiki' && styles.activeTab]}>Энциклопедия</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setActiveTab('add')} style={styles.tab}>
+            <Text style={[styles.tabText, activeTab === 'add' && styles.activeTab]}>➕ Новое</Text>
+          </TouchableOpacity>
         </View>
-    );
+      </View>
+      <View style={styles.content}>
+        {activeTab === 'birds' && <BirdList />}
+        {activeTab === 'wiki' && <WikiList />}
+        {activeTab === 'add' && <ObservationForm />}
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 16,
-        paddingTop: 48,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
-        backgroundColor: '#f5f5f5',
-    },
-    headerTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#333',
-    },
-    wikiButton: {
-        backgroundColor: '#007AFF',
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 8,
-    },
-    wikiButtonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    backButton: {
-        backgroundColor: '#007AFF',
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 8,
-    },
-    backButtonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    placeholder: {
-        width: 70,
-    },
+  container: { flex: 1, backgroundColor: '#F5F0E8' },
+  header: { paddingTop: 48, paddingBottom: 8, backgroundColor: '#F5F0E8', borderBottomWidth: 1, borderBottomColor: '#E6E0D0' },
+  logo: { fontSize: 24, fontWeight: '800', color: '#4A5A3E', textAlign: 'center', marginBottom: 12 },
+  tabBar: { flexDirection: 'row', justifyContent: 'space-around', paddingHorizontal: 20 },
+  tab: { paddingVertical: 8, paddingHorizontal: 16 },
+  tabText: { fontSize: 16, fontWeight: '600', color: '#6B6355' },
+  activeTab: { color: '#6A7A5C', borderBottomWidth: 2, borderBottomColor: '#6A7A5C' },
+  content: { flex: 1 },
 });

@@ -1,12 +1,3 @@
-export type BirdSpecies = {
-  id: number;
-  name: string;
-  description: string;
-  family: string;
-  conservation_status: string;
-  typical_nesting: string;
-};
-
 export type Observation = {
   id: string;
   birdId: number;

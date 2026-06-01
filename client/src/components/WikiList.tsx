@@ -1,121 +1,54 @@
-import axios from "axios"
-import type { Wiki } from "../types/wiki"
-import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { useEffect, useState } from 'react';
+import { View, Text, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
+import { getWikis } from '../api/client';
+import { Wiki } from '../types/wiki';
 
-const API_URL_WIKI = "http://127.0.0.1:8000/api/wiki/wikis/";
+export default function WikiList() {
+  const [articles, setArticles] = useState<Wiki[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-const WikiList = () => {
-    const [articles, setArticles] = useState<Wiki[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    getWikis()
+      .then(res => setArticles(res.data))
+      .catch(() => setError('Ошибка загрузки статей'))
+      .finally(() => setLoading(false));
+  }, []);
 
-    const getArticles = async () => {
-        try {
-            console.log("Загрузка статей...");
-            const response = await axios.get<Wiki[]>(API_URL_WIKI);
-            console.log("Получено статей:", response.data.length);
-            setArticles(response.data);
-        } catch (error) {
-            console.error("Ошибка загрузки статей:", error);
-            setError("Не удалось загрузить статьи");
-        } finally {
-            setLoading(false);
-        }
-    }
+  if (loading) return <ActivityIndicator style={styles.center} size="large" />;
+  if (error) return <Text style={styles.center}>{error}</Text>;
 
-    useEffect(() => {
-        getArticles();
-    }, []);
-
-    if (loading) {
-        return (
-            <View style={styles.center}>
-                <Text>Загрузка...</Text>
-            </View>
-        );
-    }
-
-    if (error) {
-        return (
-            <View style={styles.center}>
-                <Text style={styles.errorText}>{error}</Text>
-            </View>
-        );
-    }
-
-    if (articles.length === 0) {
-        return (
-            <View style={styles.center}>
-                <Text>Нет доступных статей</Text>
-            </View>
-        );
-    }
-
-    return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Энциклопедия птиц</Text>
-            <FlatList
-                data={articles}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <View style={styles.card}>
-                        <Text style={styles.title}>Название: {item.name}</Text>
-                        <Text style={styles.author}>Автор: {item.author}</Text>
-                        <Text style={styles.description}>Описание: {item.description}</Text>
-                    </View>
-                )}
-                scrollEnabled={true}
-                showsVerticalScrollIndicator={true}
-            />
+  return (
+    <FlatList
+      data={articles}
+      keyExtractor={item => item.id.toString()}
+      renderItem={({ item }) => (
+        <View style={styles.card}>
+          <Text style={styles.title}>{item.name}</Text>
+          <Text style={styles.author}>Автор: {item.author}</Text>
+          <Text style={styles.description}>{item.description}</Text>
         </View>
-    );
-};
+      )}
+      contentContainerStyle={{ paddingVertical: 8 }}
+    />
+  );
+}
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 16,
-    },
-    header: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 16,
-        textAlign: 'center',
-    },
-    center: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    },
-    errorText: {
-        color: 'red',
-        textAlign: 'center',
-        fontSize: 14,
-    },
-    card: {
-        backgroundColor: '#f9f9f9',
-        padding: 12,
-        marginBottom: 8,
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: '#ddd',
-    },
-    title: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 4,
-    },
-    author: {
-        fontSize: 14,
-        color: '#555',
-        marginBottom: 6,
-    },
-    description: {
-        fontSize: 14,
-        color: '#333',
-    }
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 40 },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    marginHorizontal: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  title: { fontSize: 18, fontWeight: 'bold', marginBottom: 6 },
+  author: { fontSize: 14, color: '#555', marginBottom: 4 },
+  description: { fontSize: 14, color: '#777', marginTop: 4 },
 });
-
-export default WikiList;
