@@ -60,9 +60,9 @@ const WikiList = () => {
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                     <View style={styles.card}>
-                        <Text style={styles.title}>{item.name}</Text>
+                        <Text style={styles.title}>Название: {item.name}</Text>
                         <Text style={styles.author}>Автор: {item.author}</Text>
-                        <Text style={styles.description}>{item.description}</Text>
+                        <Text style={styles.description}>Описание: {item.description}</Text>
                     </View>
                 )}
                 scrollEnabled={true}
