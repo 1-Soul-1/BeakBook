@@ -1,11 +1,21 @@
-import { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { useState, useEffect } from 'react';
+import { View, Text, TextInput, Alert, TouchableOpacity, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
-import { loginUser } from '../services/authService';
+import { useAuth } from '../contexts/AuthContext';
+import { ThemedView, ThemedText, getThemeColors } from '../components/Themed';
+import { useTheme } from '../contexts/ThemeContext';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 export default function SignInScreen() {
+  const { theme } = useTheme();
+  const colors = getThemeColors(theme);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { login, user } = useAuth();
+
+  useEffect(() => {
+    if (user) router.replace('/main/feed');
+  }, [user]);
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
@@ -13,45 +23,51 @@ export default function SignInScreen() {
       return;
     }
     try {
-      await loginUser(email, password);
-      router.replace('/main/birds');
+      await login(email, password);
     } catch (error: any) {
-      Alert.alert('Ошибка входа', error.message || 'Неверный email или пароль');
+      Alert.alert('Ошибка входа', error.message);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>BeakBook</Text>
+    <ThemedView style={styles.container}>
+      <View style={styles.logoContainer}>
+        <FontAwesome6 name="feather" size={40} color={colors.accent} />
+        <ThemedText style={styles.title}>BeakBook</ThemedText>
+      </View>
       <TextInput
-        style={styles.input}
+        style={[styles.input, { backgroundColor: colors.card, borderColor: colors.border, color: colors.text }]}
         placeholder="Email"
+        placeholderTextColor={colors.textSecondary}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
         keyboardType="email-address"
       />
       <TextInput
-        style={styles.input}
+        style={[styles.input, { backgroundColor: colors.card, borderColor: colors.border, color: colors.text }]}
         placeholder="Пароль"
+        placeholderTextColor={colors.textSecondary}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Button title="Войти" onPress={handleLogin} />
-      <TouchableOpacity onPress={() => router.push('/signup')}>
-        <Text style={styles.link}>Нет аккаунта? Зарегистрироваться</Text>
+      <TouchableOpacity style={[styles.button, { backgroundColor: colors.accent }]} onPress={handleLogin}>
+        <ThemedText style={styles.buttonText}>Войти</ThemedText>
       </TouchableOpacity>
-    </View>
+      <TouchableOpacity onPress={() => router.push('/signup')}>
+        <ThemedText style={styles.link}>Нет аккаунта? Зарегистрироваться</ThemedText>
+      </TouchableOpacity>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 20, backgroundColor: '#F5F0E8' },
-  title: { fontSize: 32, fontWeight: 'bold', textAlign: 'center', marginBottom: 40, color: '#4A5A3E' },
-  input: {
-    borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12, marginBottom: 16,
-    backgroundColor: '#fff', fontSize: 16,
-  },
-  link: { marginTop: 20, textAlign: 'center', color: '#6A7A5C', fontWeight: '600' },
+  container: { flex: 1, justifyContent: 'center', padding: 20 },
+  logoContainer: { alignItems: 'center', marginBottom: 40, gap: 12 },
+  title: { fontSize: 32, fontWeight: 'bold' },
+  input: { borderWidth: 1, borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 16 },
+  button: { borderRadius: 60, padding: 14, alignItems: 'center', marginTop: 8 },
+  buttonText: { color: 'white', fontWeight: '600' },
+  link: { marginTop: 20, textAlign: 'center', fontWeight: '600' },
 });

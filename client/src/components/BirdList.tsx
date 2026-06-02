@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View, Text, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
-import { getBirdSpecies } from '../api/client'; // путь правильный
+import { getBirdSpecies } from '../api/client';
 import { BirdSpecies } from '../types/birds';
 import BirdCard from './BirdCard';
 
@@ -22,7 +22,7 @@ export default function BirdList() {
   return (
     <FlatList
       data={species}
-      keyExtractor={item => item.id.toString()}
+      keyExtractor={item => item.name}      // ✅ заменено с item.id на item.name
       renderItem={({ item }) => <BirdCard species={item} />}
       contentContainerStyle={{ paddingVertical: 8 }}
     />

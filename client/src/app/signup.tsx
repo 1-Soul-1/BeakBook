@@ -1,12 +1,22 @@
-import { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { useState, useEffect } from 'react';
+import { View, TextInput, Alert, TouchableOpacity, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
-import { registerUser } from '../services/authService';
+import { useAuth } from '../contexts/AuthContext';
+import { ThemedView, ThemedText, getThemeColors } from '../components/Themed';
+import { useTheme } from '../contexts/ThemeContext';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 export default function SignUpScreen() {
+  const { theme } = useTheme();
+  const colors = getThemeColors(theme);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { register, user } = useAuth();
+
+  useEffect(() => {
+    if (user) router.replace('/main/feed');
+  }, [user]);
 
   const handleRegister = async () => {
     if (!name.trim() || !email.trim() || !password.trim()) {
@@ -14,48 +24,54 @@ export default function SignUpScreen() {
       return;
     }
     try {
-      await registerUser(name, email, password);
-      Alert.alert('Успешно!', 'Пользователь зарегистрирован. Теперь войдите.', [
-        { text: 'OK', onPress: () => router.replace('/signin') },
-      ]);
+      await register(name, email, password);
     } catch (error: any) {
-      Alert.alert('Ошибка регистрации', error.message || 'Не удалось создать аккаунт');
+      Alert.alert('Ошибка регистрации', error.message);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Регистрация</Text>
-      <TextInput style={styles.input} placeholder="Имя" value={name} onChangeText={setName} />
+    <ThemedView style={styles.container}>
+      <ThemedText style={styles.title}>Регистрация</ThemedText>
       <TextInput
-        style={styles.input}
+        style={[styles.input, { backgroundColor: colors.card, borderColor: colors.border, color: colors.text }]}
+        placeholder="Имя"
+        placeholderTextColor={colors.textSecondary}
+        value={name}
+        onChangeText={setName}
+      />
+      <TextInput
+        style={[styles.input, { backgroundColor: colors.card, borderColor: colors.border, color: colors.text }]}
         placeholder="Email"
+        placeholderTextColor={colors.textSecondary}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
         keyboardType="email-address"
       />
       <TextInput
-        style={styles.input}
+        style={[styles.input, { backgroundColor: colors.card, borderColor: colors.border, color: colors.text }]}
         placeholder="Пароль"
+        placeholderTextColor={colors.textSecondary}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Button title="Зарегистрироваться" onPress={handleRegister} />
-      <TouchableOpacity onPress={() => router.push('/signin')}>
-        <Text style={styles.link}>Уже есть аккаунт? Войти</Text>
+      <TouchableOpacity style={[styles.button, { backgroundColor: colors.accent }]} onPress={handleRegister}>
+        <ThemedText style={styles.buttonText}>Зарегистрироваться</ThemedText>
       </TouchableOpacity>
-    </View>
+      <TouchableOpacity onPress={() => router.push('/signin')}>
+        <ThemedText style={styles.link}>Уже есть аккаунт? Войти</ThemedText>
+      </TouchableOpacity>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 20, backgroundColor: '#F5F0E8' },
-  title: { fontSize: 32, fontWeight: 'bold', textAlign: 'center', marginBottom: 40, color: '#4A5A3E' },
-  input: {
-    borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12, marginBottom: 16,
-    backgroundColor: '#fff', fontSize: 16,
-  },
-  link: { marginTop: 20, textAlign: 'center', color: '#6A7A5C', fontWeight: '600' },
+  container: { flex: 1, justifyContent: 'center', padding: 20 },
+  title: { fontSize: 32, fontWeight: 'bold', textAlign: 'center', marginBottom: 40 },
+  input: { borderWidth: 1, borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 16 },
+  button: { borderRadius: 60, padding: 14, alignItems: 'center', marginTop: 8 },
+  buttonText: { color: 'white', fontWeight: '600' },
+  link: { marginTop: 20, textAlign: 'center', fontWeight: '600' },
 });

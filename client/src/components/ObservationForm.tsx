@@ -14,13 +14,19 @@ export default function ObservationForm() {
       return;
     }
     const newObs: Observation = {
-      id: Date.now().toString(),
-      birdId: 0,
+      id: Date.now(), // ✅ number
       birdName,
       location,
       notes,
       date: new Date().toISOString().split('T')[0],
       favorite: false,
+      // добавляем недостающие поля, чтобы соответствовать типу Observation
+      family: '',
+      status: 'обычный',
+      statusText: 'Обычный вид',
+      statusClass: 'common',
+      timestamp: Date.now(),
+      photo: null,
     };
     const existing = await loadObservations();
     await saveObservations([newObs, ...existing]);

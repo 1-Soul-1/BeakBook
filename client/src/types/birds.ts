@@ -1,19 +1,9 @@
-export type BirdSpecies = {
-  id: number;
-  name: string;
-  description: string;
-  family: string;
-  conservation_status: string;
-  typical_nesting: string;
-};
+export type ConservationStatus = 'исчезающий' | 'редкий' | 'уязвимый' | 'обычный';
 
-export type Observation = {
-  id: string;
-  birdId: number;
-  birdName: string;
-  location: string;
-  notes: string;
-  date: string;
-  photo?: string;
-  favorite: boolean;
+export type BirdSpecies = {
+  name: string;
+  family: string;
+  status: ConservationStatus;
+  statusText: string;
+  statusClass: string; // 'endangered' | 'vulnerable' | 'rare' | 'common'
 };
