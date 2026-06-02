@@ -43,7 +43,6 @@ class User(AbstractBaseUser):
     def is_staff(self):
         return self.is_admin
 
-# Добавляем ObservationEntry обратно
 class ObservationEntry(models.Model):
     name = models.CharField(max_length=100, verbose_name="Название")
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь", related_name='observations')

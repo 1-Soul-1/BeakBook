@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View, Text, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
-import { getBirdSpecies } from '../api/client';
+import { getBirdSpecies } from '../api/client'; // путь правильный
 import { BirdSpecies } from '../types/birds';
 import BirdCard from './BirdCard';
 

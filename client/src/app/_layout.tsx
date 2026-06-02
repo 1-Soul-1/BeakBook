@@ -1,15 +1,34 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
-import { useColorScheme } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Stack } from 'expo-router';
+import { getCurrentUser } from '../services/authService';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
+export default function RootLayout() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  useEffect(() => {
+    getCurrentUser().then(user => {
+      setIsAuthenticated(!!user);
+    });
+  }, []);
+
+  if (isAuthenticated === null) {
+    return null; // можно добавить сплеш-экран
+  }
+
+  // Не авторизованы – показываем экраны входа/регистрации
+  if (!isAuthenticated) {
+    return (
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="signin" />
+        <Stack.Screen name="signup" />
+      </Stack>
+    );
+  }
+
+  // Авторизованы – показываем вкладки
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="main" />
+    </Stack>
   );
 }

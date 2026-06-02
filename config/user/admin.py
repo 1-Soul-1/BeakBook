@@ -11,7 +11,7 @@ class ObservationEntryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'user', 'observation_date')
     search_fields = ('name', 'bird_activity', 'notes')
     list_filter = ('user', 'observation_date')
-    filter_horizontal = ('bird_species', 'wiki_articles', 'bird_photos')  # 👈 удобный виджет ManyToMany
+    filter_horizontal = ('bird_species', 'wiki_articles', 'bird_photos')
     fieldsets = (
         (None, {
             'fields': ('name', 'user', 'bird_species', 'wiki_articles', 'bird_photos')
