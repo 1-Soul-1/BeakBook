@@ -31,6 +31,15 @@ export default function FavoritesScreen() {
   const [editNotes, setEditNotes] = useState('');
   const [editPhoto, setEditPhoto] = useState<string | null>(null);
 
+  // Функция очистки названия от приписок "Статья:" и 📖
+  const getCleanName = useCallback((birdName: string) => {
+    return birdName
+      .replace('📖', '')
+      .replace('Статья:', '')
+      .replace('статья:', '')
+      .trim();
+  }, []);
+
   useEffect(() => {
     refreshObservations();
   }, [refreshObservations]);
@@ -38,13 +47,17 @@ export default function FavoritesScreen() {
   useEffect(() => {
     let favs = observations.filter(o => o.favorite);
     if (search) {
-      favs = favs.filter(o => o.birdName.toLowerCase().includes(search.toLowerCase()) || o.location.toLowerCase().includes(search.toLowerCase()));
+      const searchLower = search.toLowerCase();
+      favs = favs.filter(o => 
+        getCleanName(o.birdName).toLowerCase().includes(searchLower) || 
+        o.location?.toLowerCase().includes(searchLower)
+      );
     }
-    if (sort === 'date_desc') favs.sort((a, b) => b.timestamp - a.timestamp);
-    else if (sort === 'date_asc') favs.sort((a, b) => a.timestamp - b.timestamp);
-    else favs.sort((a, b) => a.birdName.localeCompare(b.birdName));
+    if (sort === 'date_desc') favs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    else if (sort === 'date_asc') favs.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    else if (sort === 'name_asc') favs.sort((a, b) => getCleanName(a.birdName).localeCompare(getCleanName(b.birdName)));
     setFavorites(favs);
-  }, [observations, search, sort]);
+  }, [observations, search, sort, getCleanName]);
 
   const openModal = (obs: Observation) => {
     setSelectedObs(obs);
@@ -105,6 +118,7 @@ export default function FavoritesScreen() {
         <ThemedText type="h2">Избранное</ThemedText>
         <ThemedTextSecondary style={styles.count}>⭐ {favorites.length}</ThemedTextSecondary>
       </View>
+      
       <View style={[styles.searchBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <FontAwesome6 name="magnifying-glass" size={16} color={colors.textSecondary} />
         <TextInput
@@ -120,23 +134,48 @@ export default function FavoritesScreen() {
           </TouchableOpacity>
         )}
       </View>
+      
       <View style={styles.sortBar}>
-        <TouchableOpacity onPress={() => setSort('date_desc')}>
+        <TouchableOpacity 
+          style={[
+            styles.sortButton, 
+            sort === 'date_desc' && styles.sortButtonActive,
+            { borderColor: colors.border, backgroundColor: colors.card }
+          ]} 
+          onPress={() => setSort('date_desc')}
+        >
           <ThemedTextSecondary style={sort === 'date_desc' ? styles.activeSort : styles.sort}>
             Новые сначала
           </ThemedTextSecondary>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setSort('date_asc')}>
+        
+        <TouchableOpacity 
+          style={[
+            styles.sortButton, 
+            sort === 'date_asc' && styles.sortButtonActive,
+            { borderColor: colors.border, backgroundColor: colors.card }
+          ]} 
+          onPress={() => setSort('date_asc')}
+        >
           <ThemedTextSecondary style={sort === 'date_asc' ? styles.activeSort : styles.sort}>
             Старые сначала
           </ThemedTextSecondary>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setSort('name_asc')}>
+        
+        <TouchableOpacity 
+          style={[
+            styles.sortButton, 
+            sort === 'name_asc' && styles.sortButtonActive,
+            { borderColor: colors.border, backgroundColor: colors.card }
+          ]} 
+          onPress={() => setSort('name_asc')}
+        >
           <ThemedTextSecondary style={sort === 'name_asc' ? styles.activeSort : styles.sort}>
             А-Я
           </ThemedTextSecondary>
         </TouchableOpacity>
       </View>
+      
       <FlatList
         data={favorites}
         keyExtractor={item => item.id.toString()}
@@ -179,7 +218,7 @@ export default function FavoritesScreen() {
                     <ThemedText>Редактировать</ThemedText>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.modalButton, { backgroundColor: colors.accentLight }]} onPress={() => handleDelete(selectedObs.id)}>
-                    <FontAwesome6 name="trash-can" size={14} color={colors.danger} />
+                    <FontAwesome6 name="trash-alt" size={14} color={colors.danger} />
                     <ThemedText style={{ color: colors.danger }}>Удалить</ThemedText>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.modalButton, { backgroundColor: colors.accentLight }]} onPress={() => setModalVisible(false)}>
@@ -201,7 +240,7 @@ export default function FavoritesScreen() {
                   <ThemedText>Изменить фото</ThemedText>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.modalButton, { backgroundColor: colors.accentLight }]} onPress={() => setEditPhoto(null)}>
-                  <FontAwesome6 name="trash-can" size={14} color={colors.danger} />
+                  <FontAwesome6 name="trash-alt" size={14} color={colors.danger} />
                   <ThemedText>Удалить фото</ThemedText>
                 </TouchableOpacity>
                 <View style={styles.modalActions}>
@@ -236,9 +275,25 @@ const styles = StyleSheet.create({
   count: { fontSize: 14 },
   searchBar: { flexDirection: 'row', alignItems: 'center', borderRadius: BorderRadius.pill, paddingHorizontal: Spacing.four, paddingVertical: Spacing.three, marginBottom: Spacing.three, borderWidth: 0.5, gap: Spacing.two },
   searchInput: { flex: 1, fontSize: 16 },
-  sortBar: { flexDirection: 'row', gap: Spacing.four, marginBottom: Spacing.four, justifyContent: 'flex-end' },
-  sort: { fontSize: 14 },
-  activeSort: { fontSize: 14, fontWeight: 'bold', color: '#6A7A5C' },
+  sortBar: { 
+    flexDirection: 'row', 
+    gap: Spacing.two, 
+    marginBottom: Spacing.four, 
+    justifyContent: 'flex-end',
+    flexWrap: 'wrap',
+  },
+  sortButton: {
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.two,
+    borderRadius: BorderRadius.pill,
+    borderWidth: 1,
+  },
+  sortButtonActive: {
+    backgroundColor: '#6A7A5C20',
+    borderColor: '#6A7A5C',
+  },
+  sort: { fontSize: 13 },
+  activeSort: { fontSize: 13, fontWeight: 'bold', color: '#6A7A5C' },
   empty: { textAlign: 'center', marginTop: Spacing.eight },
   modalOverlay: { flex: 1, justifyContent: 'center', padding: Spacing.five, backgroundColor: 'rgba(0,0,0,0.5)' },
   modalContent: { borderRadius: BorderRadius.xxl, padding: Spacing.five, maxHeight: '80%' },

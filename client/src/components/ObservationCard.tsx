@@ -1,6 +1,6 @@
 // components/ObservationCard.tsx
 import React, { useState } from 'react';
-import { View, Image, TouchableOpacity, StyleSheet, Modal, Platform } from 'react-native';
+import { View, Image, TouchableOpacity, StyleSheet, Modal, Platform, ScrollView } from 'react-native';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Observation } from '../types/observation';
 import { ThemedCard, ThemedText, ThemedTextSecondary, getThemeColors } from './Themed';
@@ -37,13 +37,41 @@ export const ObservationCard: React.FC<Props> = ({
   const hasPhoto = observation.photo && observation.photo.startsWith('data:image');
   const statusColor = statusColorMap[observation.statusClass as keyof typeof statusColorMap] || '#8FA47E';
   const isDark = theme === 'dark';
+  
+  // Проверяем, является ли запись статьей
+  const isArticle = observation.family === 'Познавательное';
+  
+  // Выбираем иконку в зависимости от типа записи
+  const getIcon = () => {
+    if (isArticle) {
+      return 'book-open'; // Иконка книги для статей
+    }
+    return 'feather'; // Иконка пера для наблюдений
+  };
+  
+  // Выбираем цвет иконки
+  const getIconColor = () => {
+    if (isArticle) {
+      return colors.warning || '#E0B85C'; // Золотистый цвет для статей
+    }
+    return isDark ? '#8FA47E' : '#4A5A3E'; // Зеленый для наблюдений
+  };
+  
+  // Выбираем фон иконки
+  const getIconBgColor = () => {
+    if (isArticle) {
+      return isDark ? '#3E3A28' : '#FDF6E8'; // Светло-желтый фон для статей
+    }
+    return isDark ? '#3A4334' : '#DDE6D6'; // Светло-зеленый фон для наблюдений
+  };
 
   const handleToggleFavorite = () => {
     onToggleFavorite();
     if (showToast) {
+      const birdName = cleanBirdName;
       const message = observation.favorite 
-        ? `${observation.birdName.split('(')[0].trim()} удалено из избранного`
-        : `${observation.birdName.split('(')[0].trim()} добавлено в избранное`;
+        ? `${birdName} удалено из избранного`
+        : `${birdName} добавлено в избранное`;
       showToast(message, 'success');
     }
   };
@@ -60,7 +88,7 @@ export const ObservationCard: React.FC<Props> = ({
     setShowDeleteModal(false);
     onDelete();
     if (showToast) {
-      showToast('Наблюдение удалено', 'error');
+      showToast('Запись удалена', 'error');
     }
   };
 
@@ -74,30 +102,28 @@ export const ObservationCard: React.FC<Props> = ({
     return text.substring(0, maxLength - 3) + '...';
   };
 
+  // Очищаем название от приписки "Статья: " и эмодзи 📖
+  const cleanBirdName = observation.birdName
+    .replace('📖', '')
+    .replace('Статья:', '')
+    .replace('статья:', '')
+    .trim();
+
   const truncatedNotes = observation.notes 
     ? truncateText(observation.notes, 100)
     : '— нет заметок —';
-
-  // Обрезаем длинные тексты для бейджей
-  const truncatedFamily = observation.family.length > 20 
-    ? truncateText(observation.family, 18) 
-    : observation.family;
-    
-  const truncatedStatus = observation.statusText.length > 20 
-    ? truncateText(observation.statusText, 18) 
-    : observation.statusText;
 
   return (
     <>
       <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
         <ThemedCard style={[styles.card, observation.favorite && styles.favorited]}>
           <View style={styles.row}>
-            <View style={[styles.icon, { backgroundColor: isDark ? '#3A4334' : '#DDE6D6' }]}>
-              <FontAwesome6 name="feather" size={20} color={isDark ? '#8FA47E' : '#4A5A3E'} />
+            <View style={[styles.icon, { backgroundColor: getIconBgColor() }]}>
+              <FontAwesome6 name={getIcon()} size={20} color={getIconColor()} />
             </View>
             <View style={styles.content}>
               <ThemedText style={styles.birdName} numberOfLines={2}>
-                {observation.birdName}
+                {cleanBirdName}
               </ThemedText>
               <View style={styles.meta}>
                 <FontAwesome6 name="location-dot" size={10} color={colors.textSecondary} />
@@ -107,18 +133,17 @@ export const ObservationCard: React.FC<Props> = ({
                 <FontAwesome6 name="calendar" size={10} color={colors.textSecondary} />
                 <ThemedTextSecondary style={styles.metaText}>{observation.date}</ThemedTextSecondary>
               </View>
-              {/* Семейство и статус в одной строке - теперь с flexShrink */}
               <View style={styles.tagsRow}>
                 <View style={[styles.infoBadge, { backgroundColor: isDark ? '#3A4334' : '#DDE6D6' }]}>
                   <FontAwesome6 name="leaf" size={9} color={colors.accentDark} />
                   <ThemedText style={styles.infoText} numberOfLines={1}>
-                    {truncatedFamily}
+                    {observation.family}
                   </ThemedText>
                 </View>
                 <View style={[styles.infoBadge, { backgroundColor: `${statusColor}20` }]}>
                   <FontAwesome6 name="shield" size={9} color={statusColor} />
                   <ThemedText style={[styles.infoText, { color: statusColor }]} numberOfLines={1}>
-                    {truncatedStatus}
+                    {observation.statusText}
                   </ThemedText>
                 </View>
               </View>
@@ -132,10 +157,16 @@ export const ObservationCard: React.FC<Props> = ({
             )}
           </View>
           
-          <View style={styles.notesContainer}>
-            <ThemedTextSecondary style={styles.notes} numberOfLines={3}>
-              {truncatedNotes}
-            </ThemedTextSecondary>
+          {/* Notes preview with border - как в HTML */}
+          <View style={[styles.notesPreview, { 
+            backgroundColor: isDark ? colors.cardAlt : colors.cardAlt,
+            borderColor: colors.border 
+          }]}>
+            <ScrollView style={styles.notesScroll} showsVerticalScrollIndicator={false}>
+              <ThemedTextSecondary style={styles.notesText}>
+                {truncatedNotes}
+              </ThemedTextSecondary>
+            </ScrollView>
           </View>
           
           <View style={[styles.actions, { borderTopColor: colors.border }]}>
@@ -155,7 +186,7 @@ export const ObservationCard: React.FC<Props> = ({
               <ThemedTextSecondary style={styles.actionText}>Изменить</ThemedTextSecondary>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleDeletePress} style={styles.actionButton}>
-              <FontAwesome6 name="trash-can" size={12} color={colors.danger} />
+              <FontAwesome6 name="trash-alt" size={12} color={colors.danger} />
               <ThemedTextSecondary style={[styles.actionText, { color: colors.danger }]}>Удалить</ThemedTextSecondary>
             </TouchableOpacity>
           </View>
@@ -171,7 +202,7 @@ export const ObservationCard: React.FC<Props> = ({
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
             <View style={styles.modalIcon}>
-              <FontAwesome6 name="trash-can" size={48} color={colors.danger} />
+              <FontAwesome6 name="trash-alt" size={48} color={colors.danger} />
             </View>
             <ThemedText style={styles.modalTitle}>Удалить наблюдение?</ThemedText>
             <ThemedTextSecondary style={styles.modalMessage}>
@@ -202,7 +233,6 @@ const styles = StyleSheet.create({
   card: { 
     padding: Spacing.four, 
     marginBottom: Spacing.three,
-    height: 230,
     ...Platform.select({
       ios: { shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 4 },
       android: { elevation: 2 },
@@ -239,12 +269,19 @@ const styles = StyleSheet.create({
   thumbnail: { width: 48, height: 48, borderRadius: BorderRadius.large, marginLeft: Spacing.two, flexShrink: 0 },
   thumbnailPlaceholder: { width: 48, height: 48, borderRadius: BorderRadius.large, marginLeft: Spacing.two, justifyContent: 'center', alignItems: 'center', flexShrink: 0 },
   
-  notesContainer: {
+  notesPreview: {
     marginTop: Spacing.two,
+    borderWidth: 1,
+    borderRadius: BorderRadius.xl,
+    padding: Spacing.two,
+    maxHeight: 60,
+    minHeight: 50,
+  },
+  notesScroll: {
     flex: 1,
   },
-  notes: { 
-    fontSize: 12, 
+  notesText: {
+    fontSize: 11,
     fontStyle: 'italic',
     lineHeight: 16,
   },

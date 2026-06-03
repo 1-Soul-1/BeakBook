@@ -65,13 +65,13 @@ export const Toast: React.FC<ToastProps> = ({
 
   if (!visible) return null;
 
-  // Иконки как в HTML версии
+  // Иконки для разных типов уведомлений
   const getIcon = () => {
     switch (type) {
       case 'success':
         return 'check-circle';
       case 'error':
-        return 'exclamation-circle';
+        return 'circle-xmark'; // ← заменили на circle-xmark
       case 'warning':
         return 'triangle-exclamation';
       default:
@@ -79,17 +79,17 @@ export const Toast: React.FC<ToastProps> = ({
     }
   };
 
-  // Цвета как в HTML версии
+  // Пастельные цвета
   const getBackgroundColor = () => {
     switch (type) {
       case 'success':
-        return '#4CAF50'; // Зеленый для успеха
+        return '#8FA47E';
       case 'error':
-        return '#E39371'; // Терракотовый для ошибки (как danger в HTML)
+        return '#E39371';
       case 'warning':
-        return '#E0B85C'; // Золотистый для предупреждения (как warning в HTML)
+        return '#D4B87A';
       default:
-        return '#6A7A5C'; // Акцентный цвет как в HTML
+        return '#6A7A5C';
     }
   };
 
@@ -108,7 +108,7 @@ export const Toast: React.FC<ToastProps> = ({
         onPress={hideToast}
         style={[styles.toast, { backgroundColor: getBackgroundColor() }]}
       >
-        <FontAwesome6 name={getIcon()} size={18} color="#FFFFFF" />
+        <FontAwesome6 name={getIcon()} size={16} color="#FFFFFF" />
         <ThemedText style={styles.message}>{message}</ThemedText>
       </TouchableOpacity>
     </Animated.View>
@@ -135,20 +135,20 @@ const styles = StyleSheet.create({
       ios: {
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
+        shadowOpacity: 0.1,
         shadowRadius: 4,
       },
       android: {
-        elevation: 4,
+        elevation: 3,
       },
       web: {
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
       },
     }),
   },
   message: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '500',
   },
 });
