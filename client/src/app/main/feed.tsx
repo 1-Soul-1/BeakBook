@@ -1,6 +1,7 @@
 // app/main/feed.tsx
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { FlatList, TextInput, View, TouchableOpacity, StyleSheet, Modal, ScrollView, Alert, Image, Platform, RefreshControl, ActivityIndicator } from 'react-native';
+import { useFocusEffect } from 'expo-router';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { useObservations } from '../../hooks/useObservations';
 import { ObservationCard } from '../../components/ObservationCard';
@@ -32,7 +33,14 @@ export default function FeedScreen() {
   const [editPhoto, setEditPhoto] = useState<string | null>(null);
   const [displayedCount, setDisplayedCount] = useState(PAGE_SIZE);
 
-  // Функция очистки названия от приписок "Статья:" и 📖
+  // Принудительное обновление при каждом появлении экрана
+  useFocusEffect(
+    useCallback(() => {
+      refreshObservations();
+      setDisplayedCount(PAGE_SIZE);
+    }, [refreshObservations])
+  );
+
   const getCleanName = useCallback((birdName: string) => {
     return birdName
       .replace('📖', '')
@@ -41,13 +49,8 @@ export default function FeedScreen() {
       .trim();
   }, []);
 
-  useEffect(() => {
-    refreshObservations();
-    setDisplayedCount(PAGE_SIZE);
-  }, [refreshObservations]);
-
   const favoritesCount = useMemo(() => observations.filter(o => o.favorite).length, [observations]);
-  
+
   const filteredAndSorted = useMemo(() => {
     let result = [...observations];
     if (search) {
@@ -139,7 +142,6 @@ export default function FeedScreen() {
   }, [colors]);
 
   const keyExtractor = useCallback((item: Observation) => item.id.toString(), []);
-  
   const renderItem = useCallback(({ item }: { item: Observation }) => (
     <ObservationCard
       observation={item}
@@ -175,7 +177,6 @@ export default function FeedScreen() {
                 <ThemedTextSecondary style={styles.count}>⭐ {favoritesCount}</ThemedTextSecondary>
               </View>
             </View>
-            
             <View style={[styles.searchBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <FontAwesome6 name="magnifying-glass" size={16} color={colors.textSecondary} />
               <TextInput
@@ -191,45 +192,24 @@ export default function FeedScreen() {
                 </TouchableOpacity>
               )}
             </View>
-            
             <View style={styles.sortBar}>
               <TouchableOpacity 
-                style={[
-                  styles.sortButton, 
-                  sort === 'date_desc' && styles.sortButtonActive,
-                  { borderColor: colors.border, backgroundColor: colors.card }
-                ]} 
+                style={[styles.sortButton, sort === 'date_desc' && styles.sortButtonActive, { borderColor: colors.border, backgroundColor: colors.card }]} 
                 onPress={() => setSort('date_desc')}
               >
-                <ThemedTextSecondary style={sort === 'date_desc' ? styles.activeSort : styles.sort}>
-                  Новые сначала
-                </ThemedTextSecondary>
+                <ThemedTextSecondary style={sort === 'date_desc' ? styles.activeSort : styles.sort}>Новые сначала</ThemedTextSecondary>
               </TouchableOpacity>
-              
               <TouchableOpacity 
-                style={[
-                  styles.sortButton, 
-                  sort === 'date_asc' && styles.sortButtonActive,
-                  { borderColor: colors.border, backgroundColor: colors.card }
-                ]} 
+                style={[styles.sortButton, sort === 'date_asc' && styles.sortButtonActive, { borderColor: colors.border, backgroundColor: colors.card }]} 
                 onPress={() => setSort('date_asc')}
               >
-                <ThemedTextSecondary style={sort === 'date_asc' ? styles.activeSort : styles.sort}>
-                  Старые сначала
-                </ThemedTextSecondary>
+                <ThemedTextSecondary style={sort === 'date_asc' ? styles.activeSort : styles.sort}>Старые сначала</ThemedTextSecondary>
               </TouchableOpacity>
-              
               <TouchableOpacity 
-                style={[
-                  styles.sortButton, 
-                  sort === 'name_asc' && styles.sortButtonActive,
-                  { borderColor: colors.border, backgroundColor: colors.card }
-                ]} 
+                style={[styles.sortButton, sort === 'name_asc' && styles.sortButtonActive, { borderColor: colors.border, backgroundColor: colors.card }]} 
                 onPress={() => setSort('name_asc')}
               >
-                <ThemedTextSecondary style={sort === 'name_asc' ? styles.activeSort : styles.sort}>
-                  А-Я
-                </ThemedTextSecondary>
+                <ThemedTextSecondary style={sort === 'name_asc' ? styles.activeSort : styles.sort}>А-Я</ThemedTextSecondary>
               </TouchableOpacity>
             </View>
           </>
@@ -237,19 +217,13 @@ export default function FeedScreen() {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <FontAwesome6 name="binoculars" size={48} color={colors.textMuted} />
-            <ThemedTextSecondary style={styles.emptyText}>
-              Пока нет наблюдений
-            </ThemedTextSecondary>
-            <ThemedTextSecondary style={styles.emptySubtext}>
-              Нажмите «Новое» и добавьте первую птицу
-            </ThemedTextSecondary>
+            <ThemedTextSecondary style={styles.emptyText}>Пока нет наблюдений</ThemedTextSecondary>
+            <ThemedTextSecondary style={styles.emptySubtext}>Нажмите «Новое» и добавьте первую птицу</ThemedTextSecondary>
           </View>
         }
         onEndReached={loadMore}
         onEndReachedThreshold={0.3}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.accent} />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.accent} />}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
         windowSize={5}
@@ -258,7 +232,7 @@ export default function FeedScreen() {
         initialNumToRender={8}
       />
 
-      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+      <Modal visible={modalVisible} animationType="slide" transparent>
         <ThemedView style={styles.modalOverlay}>
           <ScrollView style={[styles.modalContent, { backgroundColor: colors.card }]}>
             {selectedObs && !editMode && (
@@ -274,14 +248,10 @@ export default function FeedScreen() {
                   </View>
                   <View style={[styles.modalBadge, { backgroundColor: `${getStatusColor(selectedObs.statusClass)}20` }]}>
                     <FontAwesome6 name="shield" size={12} color={getStatusColor(selectedObs.statusClass)} />
-                    <ThemedText style={{ fontSize: 12, color: getStatusColor(selectedObs.statusClass) }}>
-                      {selectedObs.statusText}
-                    </ThemedText>
+                    <ThemedText style={{ fontSize: 12, color: getStatusColor(selectedObs.statusClass) }}>{selectedObs.statusText}</ThemedText>
                   </View>
                 </View>
-                <ThemedTextSecondary style={styles.modalNotes}>
-                  📝 {selectedObs.notes || 'Нет заметок'}
-                </ThemedTextSecondary>
+                <ThemedTextSecondary style={styles.modalNotes}>📝 {selectedObs.notes || 'Нет заметок'}</ThemedTextSecondary>
                 <View style={styles.modalActions}>
                   <TouchableOpacity style={[styles.modalButton, { backgroundColor: colors.accentLight }]} onPress={startEdit}>
                     <FontAwesome6 name="pen-to-square" size={14} color={colors.accentDark} />
@@ -301,25 +271,9 @@ export default function FeedScreen() {
             {selectedObs && editMode && (
               <>
                 <ThemedText type="h3" style={styles.modalTitle}>Редактирование</ThemedText>
-                <TextInput 
-                  style={[styles.input, { backgroundColor: colors.card, borderColor: colors.border, color: colors.text }]} 
-                  placeholder="Локация" 
-                  value={editLocation} 
-                  onChangeText={setEditLocation} 
-                />
-                <TextInput 
-                  style={[styles.input, { backgroundColor: colors.card, borderColor: colors.border, color: colors.text }]} 
-                  placeholder="Дата (ГГГГ-ММ-ДД)" 
-                  value={editDate} 
-                  onChangeText={setEditDate} 
-                />
-                <TextInput 
-                  style={[styles.input, { backgroundColor: colors.card, borderColor: colors.border, color: colors.text, minHeight: 80 }]} 
-                  placeholder="Заметки" 
-                  value={editNotes} 
-                  onChangeText={setEditNotes} 
-                  multiline 
-                />
+                <TextInput style={[styles.input, { backgroundColor: colors.card, borderColor: colors.border, color: colors.text }]} placeholder="Локация" value={editLocation} onChangeText={setEditLocation} />
+                <TextInput style={[styles.input, { backgroundColor: colors.card, borderColor: colors.border, color: colors.text }]} placeholder="Дата (ГГГГ-ММ-ДД)" value={editDate} onChangeText={setEditDate} />
+                <TextInput style={[styles.input, { backgroundColor: colors.card, borderColor: colors.border, color: colors.text, minHeight: 80 }]} placeholder="Заметки" value={editNotes} onChangeText={setEditNotes} multiline />
                 {editPhoto && <Image source={{ uri: editPhoto }} style={styles.previewThumb} />}
                 <TouchableOpacity style={[styles.modalButton, { backgroundColor: colors.accentLight }]} onPress={pickImageForEdit}>
                   <FontAwesome6 name="camera" size={14} color={colors.accentDark} />
@@ -345,12 +299,7 @@ export default function FeedScreen() {
         </ThemedView>
       </Modal>
 
-      <Toast
-        visible={toast.visible}
-        message={toast.message}
-        type={toast.type}
-        onHide={hideToast}
-      />
+      <Toast visible={toast.visible} message={toast.message} type={toast.type} onHide={hideToast} />
     </ThemedView>
   );
 }
@@ -363,25 +312,11 @@ const styles = StyleSheet.create({
   count: { fontSize: 14 },
   searchBar: { flexDirection: 'row', alignItems: 'center', borderRadius: BorderRadius.pill, paddingHorizontal: Spacing.four, paddingVertical: Spacing.three, marginBottom: Spacing.three, borderWidth: 0.5, gap: Spacing.two },
   searchInput: { flex: 1, fontSize: 16 },
-  sortBar: { 
-    flexDirection: 'row', 
-    gap: Spacing.two, 
-    marginBottom: Spacing.four, 
-    justifyContent: 'flex-end',
-    flexWrap: 'wrap',
-  },
-  sortButton: {
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two,
-    borderRadius: BorderRadius.pill,
-    borderWidth: 1,
-  },
-  sortButtonActive: {
-    backgroundColor: '#6A7A5C20',
-    borderColor: '#6A7A5C',
-  },
-  sort: { fontSize: 13 },
-  activeSort: { fontSize: 13, fontWeight: 'bold', color: '#6A7A5C' },
+  sortBar: { flexDirection: 'row', gap: Spacing.two, marginBottom: Spacing.four, justifyContent: 'flex-end', flexWrap: 'wrap' },
+  sortButton: { paddingHorizontal: Spacing.three, paddingVertical: Spacing.two, borderRadius: BorderRadius.pill, borderWidth: 1 },
+  sortButtonActive: { backgroundColor: '#DDE6D6', borderColor: '#6A7A5C' },
+  sort: { fontSize: 13, color: '#6B6355' },
+  activeSort: { fontSize: 13, fontWeight: '600', color: '#6A7A5C' },
   centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   emptyContainer: { alignItems: 'center', padding: Spacing.eight, marginTop: Spacing.eight },
   emptyText: { marginTop: Spacing.three, fontSize: 16, fontWeight: '600' },
