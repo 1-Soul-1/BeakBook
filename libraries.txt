@@ -1,0 +1,9 @@
+Python:
+pip install django djangorestframework djangorestframework-simplejwt django-cors-headers Pillow 
+
+cd config -> python manage.py runserver
+
+React Native/Expo:
+npm install
+
+cd client -> npm run web
