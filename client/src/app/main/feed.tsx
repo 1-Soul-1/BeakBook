@@ -1,5 +1,5 @@
 // app/main/feed.tsx
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { FlatList, TextInput, View, TouchableOpacity, StyleSheet, Modal, ScrollView, Alert, Image, Platform, RefreshControl, ActivityIndicator } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -33,7 +33,6 @@ export default function FeedScreen() {
   const [editPhoto, setEditPhoto] = useState<string | null>(null);
   const [displayedCount, setDisplayedCount] = useState(PAGE_SIZE);
 
-  // Принудительное обновление при каждом появлении экрана
   useFocusEffect(
     useCallback(() => {
       refreshObservations();
@@ -42,11 +41,7 @@ export default function FeedScreen() {
   );
 
   const getCleanName = useCallback((birdName: string) => {
-    return birdName
-      .replace('📖', '')
-      .replace('Статья:', '')
-      .replace('статья:', '')
-      .trim();
+    return birdName.replace('📖', '').replace('Статья:', '').replace('статья:', '').trim();
   }, []);
 
   const favoritesCount = useMemo(() => observations.filter(o => o.favorite).length, [observations]);
@@ -66,15 +61,10 @@ export default function FeedScreen() {
     return result;
   }, [observations, search, sort, getCleanName]);
 
-  const displayedData = useMemo(() => 
-    filteredAndSorted.slice(0, displayedCount),
-    [filteredAndSorted, displayedCount]
-  );
+  const displayedData = useMemo(() => filteredAndSorted.slice(0, displayedCount), [filteredAndSorted, displayedCount]);
 
   const loadMore = useCallback(() => {
-    if (displayedCount < filteredAndSorted.length) {
-      setDisplayedCount(prev => prev + PAGE_SIZE);
-    }
+    if (displayedCount < filteredAndSorted.length) setDisplayedCount(prev => prev + PAGE_SIZE);
   }, [displayedCount, filteredAndSorted.length]);
 
   const onRefresh = useCallback(async () => {
@@ -173,8 +163,14 @@ export default function FeedScreen() {
             <View style={styles.header}>
               <ThemedText type="h2">Журнал</ThemedText>
               <View style={styles.counters}>
-                <ThemedTextSecondary style={styles.count}>Всего: {observations.length}</ThemedTextSecondary>
-                <ThemedTextSecondary style={styles.count}>⭐ {favoritesCount}</ThemedTextSecondary>
+                <View style={styles.counterItem}>
+                  <FontAwesome6 name="binoculars" size={14} color={colors.textSecondary} />
+                  <ThemedTextSecondary style={styles.count}>{observations.length}</ThemedTextSecondary>
+                </View>
+                <View style={styles.counterItem}>
+                  <FontAwesome6 name="star" size={14} color={colors.textSecondary} />
+                  <ThemedTextSecondary style={styles.count}>{favoritesCount}</ThemedTextSecondary>
+                </View>
               </View>
             </View>
             <View style={[styles.searchBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -193,22 +189,13 @@ export default function FeedScreen() {
               )}
             </View>
             <View style={styles.sortBar}>
-              <TouchableOpacity 
-                style={[styles.sortButton, sort === 'date_desc' && styles.sortButtonActive, { borderColor: colors.border, backgroundColor: colors.card }]} 
-                onPress={() => setSort('date_desc')}
-              >
+              <TouchableOpacity style={[styles.sortButton, sort === 'date_desc' && styles.sortButtonActive, { borderColor: colors.border, backgroundColor: colors.card }]} onPress={() => setSort('date_desc')}>
                 <ThemedTextSecondary style={sort === 'date_desc' ? styles.activeSort : styles.sort}>Новые сначала</ThemedTextSecondary>
               </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.sortButton, sort === 'date_asc' && styles.sortButtonActive, { borderColor: colors.border, backgroundColor: colors.card }]} 
-                onPress={() => setSort('date_asc')}
-              >
+              <TouchableOpacity style={[styles.sortButton, sort === 'date_asc' && styles.sortButtonActive, { borderColor: colors.border, backgroundColor: colors.card }]} onPress={() => setSort('date_asc')}>
                 <ThemedTextSecondary style={sort === 'date_asc' ? styles.activeSort : styles.sort}>Старые сначала</ThemedTextSecondary>
               </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.sortButton, sort === 'name_asc' && styles.sortButtonActive, { borderColor: colors.border, backgroundColor: colors.card }]} 
-                onPress={() => setSort('name_asc')}
-              >
+              <TouchableOpacity style={[styles.sortButton, sort === 'name_asc' && styles.sortButtonActive, { borderColor: colors.border, backgroundColor: colors.card }]} onPress={() => setSort('name_asc')}>
                 <ThemedTextSecondary style={sort === 'name_asc' ? styles.activeSort : styles.sort}>А-Я</ThemedTextSecondary>
               </TouchableOpacity>
             </View>
@@ -309,6 +296,7 @@ const styles = StyleSheet.create({
   listContent: { padding: Spacing.four, paddingBottom: Spacing.ten },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: Spacing.three },
   counters: { flexDirection: 'row', gap: Spacing.three },
+  counterItem: { flexDirection: 'row', alignItems: 'center', gap: Spacing.one },
   count: { fontSize: 14 },
   searchBar: { flexDirection: 'row', alignItems: 'center', borderRadius: BorderRadius.pill, paddingHorizontal: Spacing.four, paddingVertical: Spacing.three, marginBottom: Spacing.three, borderWidth: 0.5, gap: Spacing.two },
   searchInput: { flex: 1, fontSize: 16 },

@@ -33,14 +33,9 @@ export default function FavoritesScreen() {
   const [editPhoto, setEditPhoto] = useState<string | null>(null);
 
   const getCleanName = useCallback((birdName: string) => {
-    return birdName
-      .replace('📖', '')
-      .replace('Статья:', '')
-      .replace('статья:', '')
-      .trim();
+    return birdName.replace('📖', '').replace('Статья:', '').replace('статья:', '').trim();
   }, []);
 
-  // Принудительное обновление при каждом появлении экрана
   useFocusEffect(
     useCallback(() => {
       refreshObservations();
@@ -119,7 +114,10 @@ export default function FavoritesScreen() {
     <ThemedView style={styles.container}>
       <View style={styles.header}>
         <ThemedText type="h2">Избранное</ThemedText>
-        <ThemedTextSecondary style={styles.count}>⭐ {favorites.length}</ThemedTextSecondary>
+        <View style={styles.counterItem}>
+          <FontAwesome6 name="star" size={14} color={colors.textSecondary} />
+          <ThemedTextSecondary style={styles.count}>{favorites.length}</ThemedTextSecondary>
+        </View>
       </View>
 
       <View style={[styles.searchBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -139,22 +137,13 @@ export default function FavoritesScreen() {
       </View>
 
       <View style={styles.sortBar}>
-        <TouchableOpacity 
-          style={[styles.sortButton, sort === 'date_desc' && styles.sortButtonActive, { borderColor: colors.border, backgroundColor: colors.card }]} 
-          onPress={() => setSort('date_desc')}
-        >
+        <TouchableOpacity style={[styles.sortButton, sort === 'date_desc' && styles.sortButtonActive, { borderColor: colors.border, backgroundColor: colors.card }]} onPress={() => setSort('date_desc')}>
           <ThemedTextSecondary style={sort === 'date_desc' ? styles.activeSort : styles.sort}>Новые сначала</ThemedTextSecondary>
         </TouchableOpacity>
-        <TouchableOpacity 
-          style={[styles.sortButton, sort === 'date_asc' && styles.sortButtonActive, { borderColor: colors.border, backgroundColor: colors.card }]} 
-          onPress={() => setSort('date_asc')}
-        >
+        <TouchableOpacity style={[styles.sortButton, sort === 'date_asc' && styles.sortButtonActive, { borderColor: colors.border, backgroundColor: colors.card }]} onPress={() => setSort('date_asc')}>
           <ThemedTextSecondary style={sort === 'date_asc' ? styles.activeSort : styles.sort}>Старые сначала</ThemedTextSecondary>
         </TouchableOpacity>
-        <TouchableOpacity 
-          style={[styles.sortButton, sort === 'name_asc' && styles.sortButtonActive, { borderColor: colors.border, backgroundColor: colors.card }]} 
-          onPress={() => setSort('name_asc')}
-        >
+        <TouchableOpacity style={[styles.sortButton, sort === 'name_asc' && styles.sortButtonActive, { borderColor: colors.border, backgroundColor: colors.card }]} onPress={() => setSort('name_asc')}>
           <ThemedTextSecondary style={sort === 'name_asc' ? styles.activeSort : styles.sort}>А-Я</ThemedTextSecondary>
         </TouchableOpacity>
       </View>
@@ -250,6 +239,7 @@ export default function FavoritesScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: Spacing.four },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: Spacing.three },
+  counterItem: { flexDirection: 'row', alignItems: 'center', gap: Spacing.one },
   count: { fontSize: 14 },
   searchBar: { flexDirection: 'row', alignItems: 'center', borderRadius: BorderRadius.pill, paddingHorizontal: Spacing.four, paddingVertical: Spacing.three, marginBottom: Spacing.three, borderWidth: 0.5, gap: Spacing.two },
   searchInput: { flex: 1, fontSize: 16 },
