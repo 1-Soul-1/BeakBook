@@ -13,7 +13,7 @@ type Props = {
   onToggleFavorite: () => void;
   onEdit: () => void;
   onDelete: () => void;
-  showToast?: (message: string, type?: 'success' | 'error' | 'warning') => void;
+  showToast?: (message: string, type?: 'success' | 'error' | 'warning' | 'info') => void;
 };
 
 const statusColorMap = {
@@ -60,7 +60,7 @@ export const ObservationCard: React.FC<Props> = ({
     setShowDeleteModal(false);
     onDelete();
     if (showToast) {
-      showToast('Наблюдение удалено', 'success');
+      showToast('Наблюдение удалено', 'error');
     }
   };
 
@@ -68,30 +68,58 @@ export const ObservationCard: React.FC<Props> = ({
     setShowDeleteModal(false);
   };
 
+  const truncateText = (text: string, maxLength: number): string => {
+    if (!text) return '';
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength - 3) + '...';
+  };
+
+  const truncatedNotes = observation.notes 
+    ? truncateText(observation.notes, 100)
+    : '— нет заметок —';
+
+  // Обрезаем длинные тексты для бейджей
+  const truncatedFamily = observation.family.length > 20 
+    ? truncateText(observation.family, 18) 
+    : observation.family;
+    
+  const truncatedStatus = observation.statusText.length > 20 
+    ? truncateText(observation.statusText, 18) 
+    : observation.statusText;
+
   return (
     <>
       <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
         <ThemedCard style={[styles.card, observation.favorite && styles.favorited]}>
           <View style={styles.row}>
             <View style={[styles.icon, { backgroundColor: isDark ? '#3A4334' : '#DDE6D6' }]}>
-              <FontAwesome6 name="feather" size={24} color={isDark ? '#8FA47E' : '#4A5A3E'} />
+              <FontAwesome6 name="feather" size={20} color={isDark ? '#8FA47E' : '#4A5A3E'} />
             </View>
             <View style={styles.content}>
-              <ThemedText style={styles.birdName}>{observation.birdName}</ThemedText>
+              <ThemedText style={styles.birdName} numberOfLines={2}>
+                {observation.birdName}
+              </ThemedText>
               <View style={styles.meta}>
-                <FontAwesome6 name="location-dot" size={12} color={colors.textSecondary} />
-                <ThemedTextSecondary style={styles.metaText}>{observation.location || '—'}</ThemedTextSecondary>
-                <FontAwesome6 name="calendar" size={12} color={colors.textSecondary} />
+                <FontAwesome6 name="location-dot" size={10} color={colors.textSecondary} />
+                <ThemedTextSecondary style={styles.metaText} numberOfLines={1}>
+                  {observation.location || '—'}
+                </ThemedTextSecondary>
+                <FontAwesome6 name="calendar" size={10} color={colors.textSecondary} />
                 <ThemedTextSecondary style={styles.metaText}>{observation.date}</ThemedTextSecondary>
               </View>
-              <View style={styles.tags}>
-                <View style={[styles.familyBadge, { backgroundColor: isDark ? '#3A4334' : '#DDE6D6' }]}>
-                  <FontAwesome6 name="leaf" size={12} color={colors.accentDark} />
-                  <ThemedText style={styles.familyText}>{observation.family}</ThemedText>
+              {/* Семейство и статус в одной строке - теперь с flexShrink */}
+              <View style={styles.tagsRow}>
+                <View style={[styles.infoBadge, { backgroundColor: isDark ? '#3A4334' : '#DDE6D6' }]}>
+                  <FontAwesome6 name="leaf" size={9} color={colors.accentDark} />
+                  <ThemedText style={styles.infoText} numberOfLines={1}>
+                    {truncatedFamily}
+                  </ThemedText>
                 </View>
-                <View style={[styles.statusBadge, { backgroundColor: `${statusColor}20` }]}>
-                  <FontAwesome6 name="shield" size={12} color={statusColor} />
-                  <ThemedText style={{ color: statusColor }}>{observation.statusText}</ThemedText>
+                <View style={[styles.infoBadge, { backgroundColor: `${statusColor}20` }]}>
+                  <FontAwesome6 name="shield" size={9} color={statusColor} />
+                  <ThemedText style={[styles.infoText, { color: statusColor }]} numberOfLines={1}>
+                    {truncatedStatus}
+                  </ThemedText>
                 </View>
               </View>
             </View>
@@ -99,22 +127,22 @@ export const ObservationCard: React.FC<Props> = ({
               <Image source={{ uri: observation.photo! }} style={styles.thumbnail} />
             ) : (
               <View style={[styles.thumbnailPlaceholder, { backgroundColor: isDark ? '#3A4334' : '#DDE6D6' }]}>
-                <FontAwesome6 name="camera" size={20} color={isDark ? '#8FA47E' : '#6A7A5C'} />
+                <FontAwesome6 name="camera" size={16} color={isDark ? '#8FA47E' : '#6A7A5C'} />
               </View>
             )}
           </View>
-          {observation.notes ? (
-            <ThemedTextSecondary style={styles.notes} numberOfLines={2}>
-              {observation.notes}
+          
+          <View style={styles.notesContainer}>
+            <ThemedTextSecondary style={styles.notes} numberOfLines={3}>
+              {truncatedNotes}
             </ThemedTextSecondary>
-          ) : (
-            <ThemedTextSecondary style={[styles.notes, styles.emptyNotes]}>— нет заметок —</ThemedTextSecondary>
-          )}
+          </View>
+          
           <View style={[styles.actions, { borderTopColor: colors.border }]}>
             <TouchableOpacity onPress={handleToggleFavorite} style={styles.actionButton}>
               <FontAwesome6 
                 name="star" 
-                size={14} 
+                size={12} 
                 color={observation.favorite ? '#E8B84B' : colors.textSecondary} 
                 solid={observation.favorite} 
               />
@@ -123,11 +151,11 @@ export const ObservationCard: React.FC<Props> = ({
               </ThemedTextSecondary>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleEdit} style={styles.actionButton}>
-              <FontAwesome6 name="pen-to-square" size={14} color={colors.textSecondary} />
+              <FontAwesome6 name="pen-to-square" size={12} color={colors.textSecondary} />
               <ThemedTextSecondary style={styles.actionText}>Изменить</ThemedTextSecondary>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleDeletePress} style={styles.actionButton}>
-              <FontAwesome6 name="trash-can" size={14} color={colors.danger} />
+              <FontAwesome6 name="trash-can" size={12} color={colors.danger} />
               <ThemedTextSecondary style={[styles.actionText, { color: colors.danger }]}>Удалить</ThemedTextSecondary>
             </TouchableOpacity>
           </View>
@@ -173,7 +201,8 @@ export const ObservationCard: React.FC<Props> = ({
 const styles = StyleSheet.create({
   card: { 
     padding: Spacing.four, 
-    marginBottom: Spacing.three, 
+    marginBottom: Spacing.three,
+    height: 230,
     ...Platform.select({
       ios: { shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 4 },
       android: { elevation: 2 },
@@ -181,23 +210,54 @@ const styles = StyleSheet.create({
     }),
   },
   favorited: { borderLeftWidth: 4, borderLeftColor: '#E8B84B' },
-  row: { flexDirection: 'row', alignItems: 'flex-start' },
-  icon: { width: 50, height: 50, borderRadius: BorderRadius.xxxl, justifyContent: 'center', alignItems: 'center', marginRight: Spacing.three },
-  content: { flex: 1 },
-  birdName: { fontWeight: 'bold', fontSize: 16, marginBottom: Spacing.one },
+  row: { flexDirection: 'row', alignItems: 'flex-start', flexShrink: 1 },
+  icon: { width: 40, height: 40, borderRadius: BorderRadius.xxxl, justifyContent: 'center', alignItems: 'center', marginRight: Spacing.three, flexShrink: 0 },
+  content: { flex: 1, marginRight: Spacing.two, flexShrink: 1 },
+  birdName: { fontWeight: 'bold', fontSize: 15, marginBottom: Spacing.one },
   meta: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: Spacing.one, flexWrap: 'wrap' },
-  metaText: { fontSize: 12 },
-  tags: { flexDirection: 'row', gap: Spacing.two, flexWrap: 'wrap' },
-  familyBadge: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: Spacing.three, paddingVertical: Spacing.one, borderRadius: BorderRadius.xl },
-  familyText: { fontSize: 12, fontWeight: '500', color: '#4A5A3E' },
-  statusBadge: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: Spacing.three, paddingVertical: Spacing.one, borderRadius: BorderRadius.xl },
-  thumbnail: { width: 56, height: 56, borderRadius: BorderRadius.large, marginLeft: Spacing.two },
-  thumbnailPlaceholder: { width: 56, height: 56, borderRadius: BorderRadius.large, marginLeft: Spacing.two, justifyContent: 'center', alignItems: 'center' },
-  notes: { marginTop: Spacing.three, fontSize: 13, fontStyle: 'italic' },
-  emptyNotes: { opacity: 0.5 },
-  actions: { flexDirection: 'row', justifyContent: 'space-around', marginTop: Spacing.three, paddingTop: Spacing.two, borderTopWidth: 0.5 },
+  metaText: { fontSize: 11 },
+  tagsRow: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    gap: Spacing.one, 
+    flexWrap: 'wrap',
+    marginTop: Spacing.one,
+  },
+  infoBadge: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    gap: 3, 
+    paddingHorizontal: Spacing.two, 
+    paddingVertical: 2, 
+    borderRadius: BorderRadius.xl,
+    flexShrink: 1,
+  },
+  infoText: { 
+    fontSize: 10, 
+    fontWeight: '500',
+  },
+  thumbnail: { width: 48, height: 48, borderRadius: BorderRadius.large, marginLeft: Spacing.two, flexShrink: 0 },
+  thumbnailPlaceholder: { width: 48, height: 48, borderRadius: BorderRadius.large, marginLeft: Spacing.two, justifyContent: 'center', alignItems: 'center', flexShrink: 0 },
+  
+  notesContainer: {
+    marginTop: Spacing.two,
+    flex: 1,
+  },
+  notes: { 
+    fontSize: 12, 
+    fontStyle: 'italic',
+    lineHeight: 16,
+  },
+  
+  actions: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-around', 
+    marginTop: Spacing.two, 
+    paddingTop: Spacing.two, 
+    borderTopWidth: 0.5,
+  },
   actionButton: { flexDirection: 'row', alignItems: 'center', gap: Spacing.one, paddingVertical: Spacing.one },
-  actionText: { fontSize: 12, fontWeight: '600' },
+  actionText: { fontSize: 11, fontWeight: '600' },
   
   modalOverlay: {
     flex: 1,
