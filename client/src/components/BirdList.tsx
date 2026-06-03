@@ -22,7 +22,7 @@ export default function BirdList() {
   return (
     <FlatList
       data={species}
-      keyExtractor={item => item.name}      // ✅ заменено с item.id на item.name
+      keyExtractor={(item, index) => `${item.name}_${index}`}  // Используем name + index для уникальности
       renderItem={({ item }) => <BirdCard species={item} />}
       contentContainerStyle={{ paddingVertical: 8 }}
     />
