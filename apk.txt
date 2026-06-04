@@ -1,0 +1,83 @@
+IP компьютера:
+
+ipconfig
+
+В settings.py Django 
+
+ALLOWED_HOSTS = ["ip компа", "localhost", "127.0.0.1"]
+
+корне React Native проекта:
+
+EXPO_PUBLIC_API_URL=http://192.168.1.35:8000/api/v1
+
+
+В папке React Native проекта:
+
+npm install --global eas-cli
+
+
+войти в Expo с vpn:
+
+eas login
+
+
+В папке проекта
+
+eas build:configure
+
+После этого появится файл:
+
+eas.json
+
+
+в нём профиль для APK
+{
+  "build": {
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {}
+  }
+}
+
+
+По умолчанию EAS для Android чаще делает .aab, который нужен для Google Play, 
+но для установки напрямую на телефон нужен именно .apk; 
+Expo указывает, что для APK надо задать android.buildType: "apk"
+
+Собери APK
+
+Запусти:
+
+eas build -p android --profile preview
+
+Когда сборка закончится, Expo даст ссылку на скачивание APK. 
+Можно открыть ссылку на телефоне и установить приложение. Expo также указывает, 
+что APK можно установить через ссылку или командой adb install path/to/file.apk
+
+
+Если APK не подключается к Django
+
+Чаще всего причины такие:
+
+В приложении остался localhost или 127.0.0.1.
+Телефон и компьютер не в одной Wi-Fi сети.
+Django запущен не через 0.0.0.0:8000.
+В ALLOWED_HOSTS нет IP компьютера.
+Android блокирует обычный http.
+
+Для нормального теста лучше использовать HTTPS backend. 
+Если пока только локально и нужен http, 
+можно временно разрешить cleartext traffic через Expo build properties
+
+
+Если траблы с подтягиванием данных на фронт apk приложения
+
+1.
+Откройте файл android/app/src/main/AndroidManifest.xml.
+2.
+Найдите тег <application ...>.
+3.
+Добавьте в него атрибут: android:usesCleartextTraffic="true"
