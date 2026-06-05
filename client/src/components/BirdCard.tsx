@@ -1,34 +1,66 @@
-import { View, Text, StyleSheet } from 'react-native';
+// components/BirdCard.tsx
+import { View, StyleSheet } from 'react-native';
 import { BirdSpecies } from '../types/birds';
+import { ThemedText, ThemedTextSecondary, getThemeColors } from './Themed';
+import { useTheme } from '../contexts/ThemeContext';
+import { Spacing, BorderRadius, Shadows } from '../constants/theme';
 
 type Props = { species: BirdSpecies };
 
 export default function BirdCard({ species }: Props) {
+  const { theme } = useTheme();
+  const colors = getThemeColors(theme);
+
+  const getStatusColor = () => {
+    switch (species.statusClass) {
+      case 'endangered': return colors.statusEndangered;
+      case 'vulnerable': return colors.statusVulnerable;
+      case 'rare': return colors.statusRare;
+      default: return colors.statusCommon;
+    }
+  };
+
   return (
-    <View style={styles.card}>
-      <Text style={styles.name}>{species.name}</Text>
-      <Text style={styles.detail}>Семейство: {species.family}</Text>
-      <Text style={styles.detail}>Статус: {species.conservation_status}</Text>
-      <Text style={styles.detail}>Гнездование: {species.typical_nesting}</Text>
-      <Text style={styles.description}>{species.description}</Text>
+    <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }, Shadows.small]}>
+      <ThemedText style={styles.name}>{species.name}</ThemedText>
+      <ThemedTextSecondary style={styles.detail}>
+        Семейство: {species.family}
+      </ThemedTextSecondary>
+      <View style={[styles.statusBadge, { backgroundColor: `${getStatusColor()}20` }]}>
+        <ThemedTextSecondary style={[styles.statusText, { color: getStatusColor() }]}>
+          {species.statusText}
+        </ThemedTextSecondary>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    marginHorizontal: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    borderRadius: BorderRadius.xl,
+    padding: Spacing.four,
+    marginBottom: Spacing.three,
+    marginHorizontal: Spacing.four,
+    borderWidth: 0.5,
   },
-  name: { fontSize: 18, fontWeight: 'bold', marginBottom: 6 },
-  detail: { fontSize: 14, color: '#555', marginBottom: 2 },
-  description: { fontSize: 14, color: '#777', marginTop: 8 },
+  name: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: Spacing.one,
+  },
+  detail: {
+    fontSize: 14,
+    marginBottom: Spacing.two,
+  },
+  statusBadge: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.one,
+    borderRadius: BorderRadius.pill,
+    marginTop: Spacing.one,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
 });
