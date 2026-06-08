@@ -1,0 +1,14 @@
+1 - ПЕРЕКИДЫВАЕМ ОСНОВУЮ ПАПКУ БЕКЕНДА оспfig(иили ваше название) в /home в bitvise ssh
+2 -.запускам терминал в bitvise переходим в корень папки /home
+
+Идём по командам:
+4 - устанавливаем питон apt install python3.12-venv
+5 - устанавливаем виртуальное окружение python3 -m venv venv
+6 - активируем source venv/bin/activate
+7 - pip install -r requirements.txt(обязательно должен быть в нем gunicorn)
+
+9 в настройках settings в корне проекта: DEBUG = False, ALLOWED_HOSTS = ["ваш белый ір"]
+
+Запуск в ручную через gunicorn:
+cd папка проекта
+gunicorn --bind 0.0.0.0:8000 папка проекта(где settings и wsgi).wsgi:application
