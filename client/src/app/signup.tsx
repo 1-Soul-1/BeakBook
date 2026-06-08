@@ -1,4 +1,3 @@
-// app/signup.tsx
 import { useState } from 'react';
 import { View, TextInput, Alert, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
@@ -6,6 +5,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { ThemedView, ThemedText, getThemeColors } from '../components/Themed';
 import { useTheme } from '../contexts/ThemeContext';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { Toast } from '../components/Toast';
+import { useToast } from '../hooks/useToast';
 
 export default function SignUpScreen() {
   const { theme } = useTheme();
@@ -15,22 +16,24 @@ export default function SignUpScreen() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
+  const { toast, showToast, hideToast } = useToast();
 
   const handleRegister = async () => {
     if (!name.trim() || !email.trim() || !password.trim()) {
       Alert.alert('Ошибка', 'Заполните все поля');
       return;
     }
-    
     if (password.length < 6) {
       Alert.alert('Ошибка', 'Пароль должен содержать минимум 6 символов');
       return;
     }
-    
     setLoading(true);
     try {
       await register(name, email, password);
-      router.replace('/main/feed');
+      showToast('Аккаунт успешно создан!', 'success');
+      setTimeout(() => {
+        router.replace('/main/feed');
+      }, 1500);
     } catch (error: any) {
       Alert.alert('Ошибка регистрации', error.message);
     } finally {
@@ -91,6 +94,8 @@ export default function SignUpScreen() {
       <TouchableOpacity onPress={() => router.push('/signin')} disabled={loading}>
         <ThemedText style={styles.link}>Уже есть аккаунт? Войти</ThemedText>
       </TouchableOpacity>
+
+      <Toast visible={toast.visible} message={toast.message} type={toast.type} onHide={hideToast} />
     </ThemedView>
   );
 }

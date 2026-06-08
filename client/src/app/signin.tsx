@@ -1,4 +1,3 @@
-// app/signin.tsx
 import { useState } from 'react';
 import { View, TextInput, Alert, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
@@ -30,6 +29,7 @@ export default function SignInScreen() {
       setLoading(false);
     }
   };
+
   return (
     <ThemedView style={styles.container}>
       <View style={styles.logoContainer}>
