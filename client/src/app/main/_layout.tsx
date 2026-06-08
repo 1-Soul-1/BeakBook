@@ -56,21 +56,17 @@ export default function MainLayout() {
             borderTopWidth: 0.5,
             paddingBottom: isIOS ? insets.bottom : Spacing.two,
             paddingTop: Platform.OS === 'ios' ? Spacing.two : Spacing.one,
-            height: Platform.OS === 'ios' ? 85 : 70,      // увеличенная высота для Android
+            height: Platform.OS === 'ios' ? 85 : 70,
           },
           tabBarActiveTintColor: colors.accent,
           tabBarInactiveTintColor: colors.textSecondary,
           tabBarLabelStyle: {
-            fontSize: Platform.OS === 'ios' ? 10 : 9,    // чуть меньше на Android
+            fontSize: Platform.OS === 'ios' ? 10 : 9,
             fontWeight: '500',
             marginBottom: Platform.OS === 'ios' ? 0 : Spacing.one,
             marginTop: Platform.OS === 'ios' ? 2 : 0,
-            textAlign: 'center',
-            flexWrap: 'wrap',
-            width: '100%',                              // предотвращает обрезание текста
           },
           tabBarShowLabel: true,
-          tabBarLabelPosition: 'below-icon',
         }}
       >
         <Tabs.Screen name="feed" options={{ title: 'Лента', tabBarIcon: ({ color, focused }) => <FontAwesome6 name="list-ul" size={22} color={color} solid={focused} /> }} />

@@ -1,3 +1,4 @@
+// contexts/AuthContext.tsx
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { getCurrentUser, loginUser, registerUser, logoutUser } from '../services/authService';
 
@@ -16,10 +17,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getCurrentUser().then(u => {
-      setUser(u);
-      setIsLoading(false);
-    });
+    getCurrentUser()
+      .then(u => {
+        setUser(u);
+      })
+      .catch(() => {
+        setUser(null);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   const login = async (email: string, password: string) => {

@@ -9,6 +9,6 @@
 
 9 в настройках settings в корне проекта: DEBUG = False, ALLOWED_HOSTS = ["ваш белый ір"]
 
-Запуск в ручную через gunicorn:
+Запуск в  ручную через gunicorn:
 cd папка проекта
 gunicorn --bind 0.0.0.0:8000 папка проекта(где settings и wsgi).wsgi:application
