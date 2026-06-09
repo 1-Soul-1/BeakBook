@@ -1,3 +1,5 @@
+venv - Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+
 1 - ПЕРЕКИДЫВАЕМ ОСНОВУЮ ПАПКУ БЕКЕНДА оспfig(иили ваше название) в /home в bitvise ssh
 2 -.запускам терминал в bitvise переходим в корень папки /home
 
@@ -12,3 +14,119 @@
 Запуск в  ручную через gunicorn:
 cd папка проекта
 gunicorn --bind 0.0.0.0:8000 папка проекта(где settings и wsgi).wsgi:application
+
+
+Шаг 3 -
+Создаём сервис:
+для автоматизации запуска, чтобы серевер работал всегда
+sudo nano /etc/systemd/system/gunicorn.service
+
+и вставляем конфигурацию:
+[Unit]
+Description=Сервер Gunicorn для моего Django проекта
+After=network.target
+
+[Service]
+User=your_username      # Ваше имя пользователя на VPS
+Group=www-data
+WorkingDirectory=/home/myproject
+ExecStart=/home/myproject/venv/bin/gunicorn \
+          --workers 3 \
+          --bind unix:/home/myproject/myproject.sock \
+          myproject.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
+
+ превратить в
+
+[Unit]
+Description=Сервер Gunicorn для моего Django проекта
+After=network.target
+
+[Service]
+User=ruslaet7      
+Group=www-data
+WorkingDirectory=/home/BeakBook
+ExecStart=/home/BeakBook/venv/bin/gunicorn \
+          --workers 3 \
+          --bind unix:/home/config/config.sock \
+          config.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
+
+Ctrl + O
+Enter
+Ctrl + X
+
+этот файл - сокет для свзи с nginx
+
+
+
+Запустить и включить автозагрузку
+sudo systemctl start gunicorn
+sudo systemctl enable gunicorn
+sudo systemctl status gunicorn (проверяем что статус был activate(runing))
+
+как получили все active - устанавливаем nginx
+sudo apt update
+sudo apt install nginx
+
+создаем конфигурацию nginx
+sudo nano /etc/nginx/sites-available/my_project -> sudo nano /etc/nginx/sites-available/BeakBook
+
+прописываем конфигурацию настройки:
+server {
+    listen 80;
+    server_name ваш_белый_ip_адрес;
+
+    location /static/ {
+        root /home/myproject;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/myproject/myproject.sock;
+    }
+}
+
+превратить в - 
+
+server {
+    listen 80;
+    server_name 62.113.99.166;
+
+    location /static/ {
+        root /home/myproject;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/config/config.sock;
+    }
+}
+
+
+
+Активируем конфигурацию:
+sudo ln -s /etc/nginx/sites-available/BeakBook /etc/nginx/sites-enabled
+sudo nginx -t (проверить нет ли ошибок в config)
+sudo systemctl restart nginx
+
+
+
+Обязательное для Android:
+установка ssl  протокола 
+
+sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d 62.113.99.166
+
+Откройте файл android/app/src/debug/AndroidManifest.xml
+
+Добавьте в тэг <application> параметр android:usesCleartextTraffic="true"
+
+android:usesCleartextTraffic="true"
+
+
+Сделайте тоже самое в основном файле манифеста: android/app/src/main/AndroidManifest.xml
