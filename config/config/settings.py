@@ -1,35 +1,35 @@
-"""
-Django settings for config project.
-"""
-
 import os
 from pathlib import Path
 from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
+ALLOWED_HOSTS = [
+    '62.113.99.166',      # ваш сервер
+    'localhost',
+    '127.0.0.1',
+    '10.0.2.2',           # Android эмулятор
+]
+
 SECRET_KEY = 'django-insecure-bw*6gl(kvetko*e^7bb&9bfbd9wsxb%vo(&d5afsf)*9#17=1s'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False 
+# ВРЕМЕННО для отладки админки - потом вернуть False
+DEBUG = True  # <-- Временно включите для отладки админки
 
-# Разрешаем все необходимые хосты для разработки
 ALLOWED_HOSTS = [
     '62.113.99.166',
     'localhost',
     '127.0.0.1',
-    '10.0.2.2',      # Android эмулятор
+    '10.0.2.2',
 ]
 
-# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles',  # Убедитесь, что этот app есть
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
@@ -68,7 +68,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -76,7 +75,6 @@ DATABASES = {
     }
 }
 
-# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -91,46 +89,40 @@ LOGGING = {
     'root': {'handlers': ['console'], 'level': 'DEBUG'},
 }
 
-# Internationalization
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = 'ru-ru'  # Лучше поставить русский для админки
+TIME_ZONE = 'Europe/Moscow'  # Ваш часовой пояс
 USE_I18N = True
 USE_TZ = True
 
-# Static files
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Добавьте это
 
-# Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Custom user model
 AUTH_USER_MODEL = 'user.User'
 
-# Django REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
 
-# Simple JWT settings
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    'USER_ID_FIELD': 'email',           # обязательно для кастомной модели
+    'USER_ID_FIELD': 'email',
     'USER_ID_CLAIM': 'email',
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
 }
 
-# CORS settings – разрешаем запросы с эмулятора и localhost
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8081",
     "http://127.0.0.1:8081",
-    "http://10.0.2.2:8081",   # Android эмулятор
+    "http://10.0.2.2:8081",
+    "http://62.113.99.166:8081",  # Добавьте ваш сервер, если нужно
 ]
 
-# Дополнительно: разрешаем все методы и заголовки для упрощения разработки
 CORS_ALLOW_METHODS = [
     'DELETE',
     'GET',
@@ -139,6 +131,7 @@ CORS_ALLOW_METHODS = [
     'POST',
     'PUT',
 ]
+
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
@@ -151,10 +144,13 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-# Разрешаем кросс-доменные куки (если нужно)
 CORS_ALLOW_CREDENTIALS = True
 
-# CSRF – для мобильных клиентов отключаем проверку (только для API)
 CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SECURE_SSL_REDIRECT = False
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
+SECURE_HSTS_SECONDS = 0
