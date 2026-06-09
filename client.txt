@@ -1,0 +1,3 @@
+# Из папки server -> npm run dev
+
+# Из папки client -> npm run web

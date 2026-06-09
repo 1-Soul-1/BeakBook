@@ -25,7 +25,8 @@
         "backgroundColor": "#F5F0E8"
       },
       "package": "com.beakbook.app",
-      "softwareKeyboardLayoutMode": "pan"
+      "softwareKeyboardLayoutMode": "pan",
+      "usesCleartextTraffic": true
     },
     "web": {
       "bundler": "metro",
