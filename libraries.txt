@@ -6,4 +6,5 @@ cd config -> python manage.py runserver
 React Native/Expo:
 npm install
 
+cd client -> cd server -> npm run dev
 cd client -> npm run web
