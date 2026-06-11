@@ -17,11 +17,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getCurrentUser()
-      .then(u => setUser(u))
-      .catch(() => setUser(null))
-      .finally(() => setIsLoading(false));
+    checkAuth();
   }, []);
+
+  const checkAuth = async () => {
+    try {
+      const userData = await getCurrentUser();
+      setUser(userData);
+    } catch (error) {
+      console.error('Auth check error:', error);
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const login = async (email: string, password: string) => {
     const u = await loginUser(email, password);

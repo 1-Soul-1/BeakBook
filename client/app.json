@@ -11,15 +11,18 @@
       "resizeMode": "contain",
       "backgroundColor": "#F5F0E8"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": ["assets/images/*"],
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.beakbook.app",
       "infoPlist": {
         "UISupportedInterfaceOrientations": ["UIInterfaceOrientationPortrait"]
       }
     },
     "android": {
+      "assetBundlePatterns": ["assets/images/*.png"],
+      "enableProguardInReleaseBuilds": true,
+      "enableSeparateBuildPerCPUArchitecture": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#F5F0E8"
