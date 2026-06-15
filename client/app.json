@@ -9,9 +9,9 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#F5F0E8"
+      "backgroundColor": "#6A7A5C"
     },
-    "assetBundlePatterns": ["assets/images/*"],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.beakbook.app",
@@ -25,7 +25,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#F5F0E8"
+        "backgroundColor": "#6A7A5C"
       },
       "package": "com.beakbook.app",
       "softwareKeyboardLayoutMode": "pan",
@@ -40,15 +40,16 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "BeakBook хочет получить доступ к вашим фото для добавления наблюдений"
+          "photosPermission": "Разрешите доступ к фото, чтобы добавлять снимки птиц."
         }
       ],
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "BeakBook использует ваше местоположение для отметки мест наблюдения"
+          "locationAlwaysAndWhenInUsePermission": "Разрешите доступ к геолокации для определения места встречи."
         }
-      ]
+      ],
+      "expo-image-manipulator"
     ]
   }
 }
