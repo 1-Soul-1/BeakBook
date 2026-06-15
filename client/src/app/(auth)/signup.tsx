@@ -2,9 +2,9 @@
 import { useState } from 'react';
 import { View, TextInput, Alert, TouchableOpacity, StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { router } from 'expo-router';
-import { useAuth } from '../contexts/AuthContext';
-import { ThemedView, ThemedText, getThemeColors } from '../components/Themed';
-import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { ThemedView, ThemedText, getThemeColors } from '@/components/Themed';
+import { useTheme } from '@/contexts/ThemeContext';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { StatusBar } from 'expo-status-bar';
 
