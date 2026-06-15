@@ -1,6 +1,5 @@
-// services/authService.ts
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { api } from '../api/client';
+import { api } from '@/api/client';
 
 const TOKEN_KEY = '@BeakBook:token';
 const USER_KEY = '@BeakBook:user';
@@ -21,8 +20,7 @@ export const registerUser = async (name: string, email: string, password: string
     
     return user;
   } catch (error: any) {
-    console.error('Register error:', error.response?.data);
-    throw new Error(error.response?.data?.error || error.response?.data?.message || 'Ошибка регистрации');
+    throw new Error(error.response?.data?.error || 'Ошибка регистрации');
   }
 };
 
@@ -36,8 +34,7 @@ export const loginUser = async (email: string, password: string): Promise<User> 
     
     return user;
   } catch (error: any) {
-    console.error('Login error:', error.response?.data);
-    throw new Error(error.response?.data?.error || error.response?.data?.message || 'Ошибка входа');
+    throw new Error(error.response?.data?.error || 'Ошибка входа');
   }
 };
 
@@ -55,18 +52,5 @@ export const getCurrentUser = async (): Promise<User | null> => {
     return userStr ? JSON.parse(userStr) : null;
   } catch (error) {
     return null;
-  }
-};
-
-// Проверка валидности токена
-export const validateToken = async (): Promise<boolean> => {
-  try {
-    const token = await AsyncStorage.getItem(TOKEN_KEY);
-    if (!token) return false;
-    
-    const response = await api.get('/user/me/');
-    return response.status === 200;
-  } catch (error) {
-    return false;
   }
 };

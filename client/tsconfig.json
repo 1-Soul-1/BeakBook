@@ -10,21 +10,12 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "allowJs": true,
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@/assets/*": [
-        "./assets/*"
-      ]
+      "@/*": ["src/*"]
     }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
-  "extends": "expo/tsconfig.base"
+  "include": ["src/**/*", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }
