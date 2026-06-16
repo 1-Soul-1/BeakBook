@@ -24,7 +24,7 @@ export default function SignInScreen() {
     setLoading(true);
     try {
       await login(email.trim(), password);
-      router.replace('/main/feed');
+      router.replace('/feed');
     } catch (error: any) {
       Alert.alert('Ошибка входа', error.message);
     } finally {

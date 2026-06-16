@@ -11,7 +11,7 @@ export default function Index() {
       try {
         const user = await getCurrentUser();
         if (user) {
-          router.replace('/main/feed');
+          router.replace('/feed');
         } else {
           router.replace('/signin');
         }

@@ -11,7 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#6A7A5C"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": ["assets/images/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.beakbook.app",
@@ -33,7 +33,8 @@
     },
     "web": {
       "bundler": "metro",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "scheme": "beakbook"
     },
     "plugins": [
       "expo-router",
@@ -48,8 +49,7 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Разрешите доступ к геолокации для определения места встречи."
         }
-      ],
-      "expo-image-manipulator"
+      ]
     ]
   }
 }

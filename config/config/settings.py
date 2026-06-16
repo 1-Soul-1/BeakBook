@@ -16,12 +16,6 @@ SECRET_KEY = 'django-insecure-bw*6gl(kvetko*e^7bb&9bfbd9wsxb%vo(&d5afsf)*9#17=1s
 # ВРЕМЕННО для отладки админки - потом вернуть False
 DEBUG = True  # <-- Временно включите для отладки админки
 
-ALLOWED_HOSTS = [
-    '62.113.99.166',
-    'localhost',
-    '127.0.0.1',
-    '10.0.2.2',
-]
 
 INSTALLED_APPS = [
     'django.contrib.admin',

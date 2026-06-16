@@ -67,7 +67,7 @@ export default function AddObservationScreen() {
   };
   
   const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: 'images', quality: 0.6, base64: true });
+    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.6, base64: true });
     if (!result.canceled && result.assets[0].base64) {
       const compressed = await compressImage(`data:image/jpeg;base64,${result.assets[0].base64}`);
       setPhoto(compressed);
@@ -118,7 +118,7 @@ export default function AddObservationScreen() {
       showToast(`Наблюдение "${birdNameShort}" добавлено`, 'success');
       
       setTimeout(() => {
-        router.replace('/main/feed');
+        router.replace('/feed');
       }, 1000);
     } catch (error) {
       Alert.alert('Ошибка', 'Не удалось сохранить наблюдение');
@@ -129,7 +129,7 @@ export default function AddObservationScreen() {
 
   const handleCancel = () => {
     clearForm();
-    router.replace('/main/feed');
+    router.replace('/feed');
   };
 
   return (

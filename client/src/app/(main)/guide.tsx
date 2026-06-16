@@ -37,8 +37,8 @@ export default function GuideScreen() {
     article.description.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleAdd = (birdName: string) => router.push({ pathname: '/main/add', params: { birdName } });
-  const handleView = (birdName: string) => router.push({ pathname: '/main/feed', params: { search: birdName } });
+  const handleAdd = (birdName: string) => router.push({ pathname: '/add', params: { birdName } });
+  const handleView = (birdName: string) => router.push({ pathname: '/feed', params: { search: birdName } });
 
   const renderBirdItem = ({ item, index }: { item: typeof BIRD_SPECIES[0]; index: number }) => (
     <View style={[styles.item, { borderBottomColor: colors.border }]}>

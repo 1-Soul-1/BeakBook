@@ -44,7 +44,7 @@ export default function SignUpScreen() {
     try {
       await register(name.trim(), email.trim(), password);
       Alert.alert('Успех', 'Аккаунт успешно создан!');
-      router.replace('/main/feed');
+      router.replace('/feed');
     } catch (error: any) {
       Alert.alert('Ошибка регистрации', error.message);
     } finally {
