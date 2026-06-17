@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { getCurrentUser, loginUser, registerUser, logoutUser, User } from '@/services/authService';
+import { getCurrentUser, loginUser, registerUser, logoutUser, User, getToken } from '@/services/authService';
+import { setAuthToken } from '@/api/client';
 
 type AuthContextType = {
   user: User | null;
@@ -21,11 +22,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const checkAuth = async () => {
     try {
-      const userData = await getCurrentUser();
-      setUser(userData);
+      const token = await getToken();
+      if (token) {
+        // Устанавливаем токен в axios
+        setAuthToken(token);
+        const userData = await getCurrentUser();
+        setUser(userData);
+      } else {
+        setUser(null);
+      }
     } catch (error) {
       console.error('Auth check error:', error);
       setUser(null);
+      // Очищаем токен при ошибке
+      setAuthToken(null);
     } finally {
       setIsLoading(false);
     }
@@ -43,6 +53,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = async () => {
     await logoutUser();
+    setAuthToken(null);
     setUser(null);
   };
 
