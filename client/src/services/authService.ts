@@ -3,7 +3,6 @@ import { api } from '@/api/client';
 
 const TOKEN_KEY = '@BeakBook:token';
 const USER_KEY = '@BeakBook:user';
-const REFRESH_TOKEN_KEY = '@BeakBook:refresh_token';
 
 export type User = {
   id: string;
@@ -11,71 +10,70 @@ export type User = {
   email: string;
 };
 
-export type AuthResponse = {
-  token: string;
-  refresh_token?: string;
-  user: User;
-};
-
-// Сохранение токенов
-const saveTokens = async (token: string, refreshToken?: string) => {
-  await AsyncStorage.setItem(TOKEN_KEY, token);
-  if (refreshToken) {
-    await AsyncStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+const extractErrorMessage = (error: any): string => {
+  if (error.response) {
+    const data = error.response.data;
+    if (typeof data === 'string') return data;
+    if (data.detail) return data.detail;
+    if (data.error) return data.error;
+    if (data.message) return data.message;
+    if (data.email) return data.email[0];
+    if (data.name) return data.name[0];
+    if (data.password) return data.password[0];
+    return 'Неизвестная ошибка сервера';
   }
-};
-
-// Сохранение пользователя
-const saveUser = async (user: User) => {
-  await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
+  return 'Ошибка сети или сервер не отвечает';
 };
 
 export const registerUser = async (name: string, email: string, password: string): Promise<User> => {
   try {
+    console.log('🔐 Register request:', { email, name, password });
     const response = await api.post('/user/register/', { email, name, password });
-    const { token, refresh_token, user } = response.data;
-    
-    // Сохраняем токены и пользователя
-    await saveTokens(token, refresh_token);
-    await saveUser(user);
-    
+    console.log('✅ Register response:', response.data);
+    const { token, user } = response.data;
+    if (!token || !user) {
+      throw new Error('Неверный ответ сервера: отсутствует token или user');
+    }
+    await AsyncStorage.setItem(TOKEN_KEY, token);
+    await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
     return user;
   } catch (error: any) {
-    console.error('Registration error:', error.response?.data);
-    throw new Error(error.response?.data?.error || 'Ошибка регистрации');
+    const message = extractErrorMessage(error);
+    console.error('❌ Register error:', message);
+    throw new Error(message);
   }
 };
 
 export const loginUser = async (email: string, password: string): Promise<User> => {
   try {
+    console.log('🔐 Login request:', { email });
     const response = await api.post('/user/login/', { email, password });
-    const { token, refresh_token, user } = response.data;
-    
-    // Сохраняем токены и пользователя
-    await saveTokens(token, refresh_token);
-    await saveUser(user);
-    
+    console.log('✅ Login response:', response.data);
+    const { token, user } = response.data;
+    if (!token || !user) {
+      throw new Error('Неверный ответ сервера: отсутствует token или user');
+    }
+    await AsyncStorage.setItem(TOKEN_KEY, token);
+    await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
     return user;
   } catch (error: any) {
-    console.error('Login error:', error.response?.data);
-    throw new Error(error.response?.data?.error || 'Ошибка входа');
+    const message = extractErrorMessage(error);
+    console.error('❌ Login error:', message);
+    throw new Error(message);
   }
 };
 
 export const logoutUser = async () => {
   await AsyncStorage.removeItem(TOKEN_KEY);
   await AsyncStorage.removeItem(USER_KEY);
-  await AsyncStorage.removeItem(REFRESH_TOKEN_KEY);
 };
 
 export const getCurrentUser = async (): Promise<User | null> => {
   try {
     const token = await AsyncStorage.getItem(TOKEN_KEY);
     if (!token) return null;
-    
     const userStr = await AsyncStorage.getItem(USER_KEY);
     if (!userStr) return null;
-    
     return JSON.parse(userStr);
   } catch (error) {
     console.error('Get user error:', error);
