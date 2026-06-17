@@ -24,7 +24,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const token = await getToken();
       if (token) {
-        // Устанавливаем токен в axios
         setAuthToken(token);
         const userData = await getCurrentUser();
         setUser(userData);
@@ -34,7 +33,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       console.error('Auth check error:', error);
       setUser(null);
-      // Очищаем токен при ошибке
       setAuthToken(null);
     } finally {
       setIsLoading(false);
