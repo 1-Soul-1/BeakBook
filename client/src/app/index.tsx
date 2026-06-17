@@ -1,7 +1,6 @@
-// src/app/index.tsx
 import { useEffect } from 'react';
 import { router } from 'expo-router';
-import { getCurrentUser } from '@/services/authService';
+import { getCurrentUser, getToken } from '@/services/authService';
 import { ThemedView, ThemedText } from '@/components/Themed';
 import { ActivityIndicator } from 'react-native';
 
@@ -9,13 +8,19 @@ export default function Index() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const user = await getCurrentUser();
-        if (user) {
-          router.replace('/feed');
+        const token = await getToken();
+        if (token) {
+          const user = await getCurrentUser();
+          if (user) {
+            router.replace('/feed');
+          } else {
+            router.replace('/signin');
+          }
         } else {
           router.replace('/signin');
         }
       } catch (error) {
+        console.error('Auth check failed:', error);
         router.replace('/signin');
       }
     };
