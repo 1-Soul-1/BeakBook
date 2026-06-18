@@ -5,6 +5,7 @@ from datetime import timedelta
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 ALLOWED_HOSTS = [
+    '*',
     '62.113.99.166',      # ваш сервер
     'localhost',
     '127.0.0.1',
@@ -89,7 +90,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # Добавьте это
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -114,7 +115,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8081",
     "http://127.0.0.1:8081",
     "http://10.0.2.2:8081",
-    "http://62.113.99.166:8081",  # Добавьте ваш сервер, если нужно
+    "http://62.113.99.166:8081",
+    "*",
 ]
 
 CORS_ALLOW_METHODS = [

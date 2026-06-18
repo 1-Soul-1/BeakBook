@@ -12,28 +12,68 @@ export default function MainLayout() {
   const colors = getThemeColors(theme);
   const insets = useSafeAreaInsets();
 
+  // Размеры для заголовка в зависимости от платформы
+  const headerHeight = Platform.select({
+    ios: 90,
+    android: 70,
+    default: 80,
+  });
+
+  const logoFontSize = Platform.select({
+    ios: 24,
+    android: 20,
+    default: 22,
+  });
+
+  const subheadFontSize = Platform.select({
+    ios: 11,
+    android: 9,
+    default: 10,
+  });
+
   return (
     <Tabs
       screenOptions={{
-        // Убираем стандартный заголовок
         headerTitle: '',
         headerTitleStyle: { display: 'none' },
-        // Логотип слева
         headerLeft: () => (
-          <View style={[styles.headerLeft, { paddingLeft: Math.max(insets.left, Spacing.five) }]}>
-            <ThemedText style={[styles.logo, { color: colors.accent }]}>BeakBook</ThemedText>
-            <ThemedTextSecondary style={styles.subhead}>Оренбургская область • 90+ видов под охраной</ThemedTextSecondary>
+          <View style={[styles.headerLeft, { paddingLeft: Math.max(insets.left, Spacing.four) }]}>
+            <ThemedText style={[styles.logo, { color: colors.accent, fontSize: logoFontSize }]}>
+              BeakBook
+            </ThemedText>
+            <ThemedTextSecondary style={[styles.subhead, { fontSize: subheadFontSize }]}>
+              Оренбургская область • 90+ видов
+            </ThemedTextSecondary>
           </View>
         ),
-        // Переключатель темы справа
         headerRight: () => (
           <TouchableOpacity
             onPress={toggleTheme}
-            style={[styles.themeButton, { borderColor: colors.border, backgroundColor: colors.card }]}
+            style={[
+              styles.themeButton,
+              {
+                borderColor: colors.border,
+                backgroundColor: colors.card,
+                paddingVertical: Platform.select({ ios: Spacing.two, android: Spacing.one }),
+                paddingHorizontal: Platform.select({ ios: Spacing.three, android: Spacing.two }),
+              },
+            ]}
             activeOpacity={0.7}
           >
-            <FontAwesome6 name={theme === 'light' ? 'moon' : 'sun'} size={18} color={colors.text} />
-            <ThemedText style={[styles.themeButtonText, { color: colors.text }]}>
+            <FontAwesome6
+              name={theme === 'light' ? 'moon' : 'sun'}
+              size={Platform.select({ ios: 18, android: 16 })}
+              color={colors.text}
+            />
+            <ThemedText
+              style={[
+                styles.themeButtonText,
+                {
+                  color: colors.text,
+                  fontSize: Platform.select({ ios: 12, android: 10 }),
+                },
+              ]}
+            >
               {theme === 'light' ? 'Тёмная' : 'Светлая'}
             </ThemedText>
           </TouchableOpacity>
@@ -42,71 +82,71 @@ export default function MainLayout() {
           backgroundColor: colors.background,
           elevation: 0,
           shadowOpacity: 0,
-          height: Platform.OS === 'ios' ? 100 : 80,
+          height: headerHeight,
           borderBottomWidth: 1,
           borderBottomColor: colors.border,
         },
-        // Настройки нижних вкладок
         tabBarStyle: {
           backgroundColor: colors.background,
           borderTopColor: colors.border,
           borderTopWidth: 0.5,
           paddingBottom: isIOS ? insets.bottom : Spacing.two,
-          height: Platform.OS === 'ios' ? 85 : 70,
+          height: Platform.select({ ios: 80, android: 60 }),
         },
         tabBarActiveTintColor: colors.accent,
         tabBarInactiveTintColor: colors.textSecondary,
         tabBarLabelStyle: {
-          fontSize: Platform.OS === 'ios' ? 10 : 9,
+          fontSize: Platform.select({ ios: 10, android: 9 }),
           fontWeight: '500',
+          marginBottom: Platform.select({ ios: 0, android: 2 }),
         },
         tabBarShowLabel: true,
       }}
     >
-      <Tabs.Screen 
-        name="feed" 
-        options={{ 
-          title: 'Лента', 
+      <Tabs.Screen
+        name="feed"
+        options={{
+          title: 'Лента',
           tabBarIcon: ({ color, focused }) => (
-            <FontAwesome6 name="list-ul" size={22} color={color} solid={focused} />
-          ) 
-        }} 
+            <FontAwesome6 name="list-ul" size={Platform.select({ ios: 22, android: 20 })} color={color} solid={focused} />
+          ),
+        }}
       />
-      <Tabs.Screen 
-        name="guide" 
-        options={{ 
-          title: 'Гид', 
+      <Tabs.Screen
+        name="guide"
+        options={{
+          title: 'Гид',
           tabBarIcon: ({ color, focused }) => (
-            <FontAwesome6 name="compass" size={22} color={color} solid={focused} />
-          ) 
-        }} 
+            <FontAwesome6 name="compass" size={Platform.select({ ios: 22, android: 20 })} color={color} solid={focused} />
+          ),
+        }}
       />
-      <Tabs.Screen 
-        name="add" 
-        options={{ 
-          title: 'Новое', 
+      <Tabs.Screen
+        name="add"
+        options={{
+          title: 'Новое',
           tabBarIcon: ({ color, focused }) => (
-            <FontAwesome6 name="circle-plus" size={24} color={color} solid={focused} />
-          ) 
-        }} 
+            <FontAwesome6 name="circle-plus" size={Platform.select({ ios: 24, android: 22 })} color={color} solid={focused} />
+          ),
+        }}
       />
-      <Tabs.Screen 
-        name="favorites" 
-        options={{ 
-          title: 'Избранное', 
+      <Tabs.Screen
+        name="favorites"
+        options={{
+          title: 'Избранное',
           tabBarIcon: ({ color, focused }) => (
-            <FontAwesome6 name="star" size={20} color={color} solid={focused} />
-          ) 
-        }} 
+            <FontAwesome6 name="star" size={Platform.select({ ios: 20, android: 18 })} color={color} solid={focused} />
+          ),
+        }}
       />
-      <Tabs.Screen 
-        name="profile" 
-        options={{ 
-          title: 'Профиль', 
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Профиль',
           tabBarIcon: ({ color, focused }) => (
-            <FontAwesome6 name="user" size={20} color={color} solid={focused} />
-          ) 
-        }} 
+            <FontAwesome6 name="user" size={Platform.select({ ios: 20, android: 18 })} color={color} solid={focused} />
+          ),
+        }}
       />
     </Tabs>
   );
@@ -116,29 +156,26 @@ const styles = StyleSheet.create({
   headerLeft: {
     flexDirection: 'column',
     justifyContent: 'center',
-    paddingVertical: Spacing.two,
+    paddingVertical: Spacing.one,
   },
   logo: {
-    fontSize: Platform.OS === 'ios' ? 28 : 26,
     fontWeight: '800',
-    letterSpacing: -0.5,
-    marginBottom: Spacing.one,
+    letterSpacing: -0.3,
+    marginBottom: Platform.select({ ios: 2, android: 1 }),
   },
   subhead: {
-    fontSize: Platform.OS === 'ios' ? 11 : 10,
+    fontWeight: '400',
+    opacity: 0.8,
   },
   themeButton: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.one,
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two,
     borderRadius: BorderRadius.pill,
     borderWidth: 1,
     marginRight: Spacing.four,
   },
   themeButtonText: {
-    fontSize: 12,
     fontWeight: '500',
   },
 });

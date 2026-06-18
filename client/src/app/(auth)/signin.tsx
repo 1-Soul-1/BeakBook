@@ -38,14 +38,18 @@ export default function SignInScreen() {
       style={{ flex: 1, backgroundColor: colors.background }}
     >
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
+      <ScrollView 
+        contentContainerStyle={styles.scrollContainer} 
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         <ThemedView style={styles.container}>
           <View style={styles.logoContainer}>
             <View style={[styles.iconCircle, { backgroundColor: colors.accentLight }]}>
-              <FontAwesome6 name="feather" size={48} color={colors.accent} />
+              <FontAwesome6 name="feather" size={40} color={colors.accent} />
             </View>
             <ThemedText style={styles.title}>BeakBook</ThemedText>
-            <ThemedText style={styles.subtitle}>Дневник наблюдений за птицами</ThemedText>
+            <ThemedText style={styles.subtitle}>Дневник наблюдений</ThemedText>
             <ThemedText style={styles.region}>Оренбургская область</ThemedText>
           </View>
           
@@ -99,18 +103,79 @@ export default function SignInScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, justifyContent: 'center' },
-  logoContainer: { alignItems: 'center', marginBottom: 48 },
-  iconCircle: { width: 100, height: 100, borderRadius: 50, justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
-  title: { fontSize: 36, fontWeight: 'bold', marginBottom: 8 },
-  subtitle: { fontSize: 14, opacity: 0.7, textAlign: 'center' },
-  region: { fontSize: 12, opacity: 0.5, marginTop: 8 },
-  formContainer: { gap: 16 },
-  inputWrapper: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: 16, paddingHorizontal: 16, paddingVertical: 14, gap: 12 },
-  input: { flex: 1, fontSize: 16 },
-  button: { borderRadius: 16, padding: 16, alignItems: 'center', justifyContent: 'center', marginTop: 8 },
-  buttonText: { color: 'white', fontWeight: '600', fontSize: 16 },
-  linkButton: { alignItems: 'center', paddingVertical: 12 },
-  link: { fontSize: 14 },
-  linkBold: { fontWeight: '600' },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingVertical: 20,
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 24,
+    justifyContent: 'center',
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  iconCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 14,
+    opacity: 0.7,
+    textAlign: 'center',
+  },
+  region: {
+    fontSize: 12,
+    opacity: 0.5,
+    marginTop: 4,
+  },
+  formContainer: {
+    gap: 14,
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: Platform.select({ ios: 14, android: 12 }),
+    paddingVertical: Platform.select({ ios: 12, android: 10 }),
+    gap: Platform.select({ ios: 10, android: 8 }),
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+  },
+  button: {
+    borderRadius: 14,
+    paddingVertical: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 8,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  linkButton: {
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  link: {
+    fontSize: 14,
+  },
+  linkBold: {
+    fontWeight: '600',
+  },
 });

@@ -1,4 +1,4 @@
-// app/signup.tsx
+// src/app/(auth)/signup.tsx
 import { useState } from 'react';
 import { View, TextInput, Alert, TouchableOpacity, StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { router } from 'expo-router';
@@ -59,17 +59,17 @@ export default function SignUpScreen() {
     >
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
       <ScrollView 
-        contentContainerStyle={{ flexGrow: 1 }} 
+        contentContainerStyle={styles.scrollContainer} 
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
         <ThemedView style={styles.container}>
           <View style={styles.logoContainer}>
             <View style={[styles.iconCircle, { backgroundColor: colors.accentLight }]}>
-              <FontAwesome6 name="feather" size={40} color={colors.accent} />
+              <FontAwesome6 name="feather" size={36} color={colors.accent} />
             </View>
             <ThemedText style={styles.title}>Создать аккаунт</ThemedText>
-            <ThemedText style={styles.subtitle}>Присоединяйтесь к сообществу орнитологов</ThemedText>
+            <ThemedText style={styles.subtitle}>Присоединяйтесь к сообществу</ThemedText>
           </View>
           
           <View style={styles.formContainer}>
@@ -158,44 +158,49 @@ export default function SignUpScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    padding: 24,
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingVertical: 20,
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 24,
     justifyContent: 'center',
   },
-  logoContainer: { 
-    alignItems: 'center', 
-    marginBottom: 40,
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 28,
   },
   iconCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 70,
+    height: 70,
+    borderRadius: 35,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 12,
   },
-  title: { 
-    fontSize: 28, 
+  title: {
+    fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginBottom: 4,
   },
-  subtitle: { 
-    fontSize: 14, 
+  subtitle: {
+    fontSize: 14,
     opacity: 0.7,
     textAlign: 'center',
   },
   formContainer: {
-    gap: 14,
+    gap: 12,
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    gap: 12,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    gap: 10,
   },
   input: {
     flex: 1,
@@ -203,11 +208,11 @@ const styles = StyleSheet.create({
   },
   button: {
     flexDirection: 'row',
-    borderRadius: 16,
-    padding: 16,
+    borderRadius: 14,
+    paddingVertical: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 10,
+    gap: 8,
     marginTop: 8,
   },
   buttonText: {
