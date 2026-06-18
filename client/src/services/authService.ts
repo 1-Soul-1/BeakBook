@@ -27,39 +27,27 @@ const extractErrorMessage = (error: any): string => {
 
 export const registerUser = async (name: string, email: string, password: string): Promise<User> => {
   try {
-    console.log('🔐 Register request:', { email, name });
     const response = await api.post('/user/register/', { email, name, password });
-    console.log('✅ Register response:', response.data);
-    const { access, user } = response.data;  // ← изменено с token на access
-    if (!access || !user) {
-      throw new Error('Неверный ответ сервера: отсутствует access или user');
-    }
+    const { access, user } = response.data;  // ← access вместо token
+    if (!access || !user) throw new Error('Неверный ответ сервера');
     await AsyncStorage.setItem(TOKEN_KEY, access);
     await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
     return user;
   } catch (error: any) {
-    const message = extractErrorMessage(error);
-    console.error('❌ Register error:', message);
-    throw new Error(message);
+    throw new Error(extractErrorMessage(error));
   }
 };
 
 export const loginUser = async (email: string, password: string): Promise<User> => {
   try {
-    console.log('🔐 Login request:', { email });
     const response = await api.post('/user/login/', { email, password });
-    console.log('✅ Login response:', response.data);
-    const { access, user } = response.data;  // ← изменено с token на access
-    if (!access || !user) {
-      throw new Error('Неверный ответ сервера: отсутствует access или user');
-    }
+    const { access, user } = response.data;  // ← access вместо token
+    if (!access || !user) throw new Error('Неверный ответ сервера');
     await AsyncStorage.setItem(TOKEN_KEY, access);
     await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
     return user;
   } catch (error: any) {
-    const message = extractErrorMessage(error);
-    console.error('❌ Login error:', message);
-    throw new Error(message);
+    throw new Error(extractErrorMessage(error));
   }
 };
 
@@ -73,10 +61,8 @@ export const getCurrentUser = async (): Promise<User | null> => {
     const token = await AsyncStorage.getItem(TOKEN_KEY);
     if (!token) return null;
     const userStr = await AsyncStorage.getItem(USER_KEY);
-    if (!userStr) return null;
-    return JSON.parse(userStr);
-  } catch (error) {
-    console.error('Get user error:', error);
+    return userStr ? JSON.parse(userStr) : null;
+  } catch {
     return null;
   }
 };
