@@ -1,3 +1,4 @@
+// src/contexts/AuthContent.tsx
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { getCurrentUser, loginUser, registerUser, logoutUser, User, getToken } from '@/services/authService';
 import { setAuthToken } from '@/api/client';

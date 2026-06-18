@@ -1,3 +1,4 @@
+// src/utils/initialObservation.ts
 import { Observation } from '../types/observation';
 
 export const INITIAL_OBSERVATIONS: Observation[] = [

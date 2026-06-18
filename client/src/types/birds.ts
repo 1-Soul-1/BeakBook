@@ -1,3 +1,4 @@
+// src/types/birds.ts
 export type ConservationStatus = 'исчезающий' | 'редкий' | 'уязвимый' | 'обычный';
 
 export type BirdSpecies = {

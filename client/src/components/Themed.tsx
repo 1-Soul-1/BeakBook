@@ -1,4 +1,4 @@
-// components/Themed.tsx
+// src/components/Themed.tsx
 import { Text, TextProps, View, ViewProps, StyleSheet, TouchableOpacity, TouchableOpacityProps, ActivityIndicator, Platform, TextInput as RNTextInput } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 import { Colors, Typography, BorderRadius, Shadows, Spacing } from '../constants/theme';

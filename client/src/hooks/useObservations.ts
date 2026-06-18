@@ -1,4 +1,4 @@
-// hooks/useObservations.ts
+// src/hooks/useObservations.ts
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { Observation } from '../types/observation';
 import { loadObservations, saveObservations } from '../utils/storage';

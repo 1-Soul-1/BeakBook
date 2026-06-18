@@ -1,4 +1,4 @@
-// components/AutocompleteInput.tsx
+// src/components/AutocompleteInput.tsx
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, FlatList, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { ThemedText, ThemedTextSecondary, getThemeColors } from './Themed';

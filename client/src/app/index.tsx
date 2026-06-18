@@ -1,3 +1,4 @@
+// src/app/index.tsx
 import { useEffect } from 'react';
 import { router } from 'expo-router';
 import { getCurrentUser, getToken } from '@/services/authService';

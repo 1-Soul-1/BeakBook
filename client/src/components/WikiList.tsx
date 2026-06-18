@@ -1,3 +1,4 @@
+// src/components/WikiList.tsx
 import { useEffect, useState } from 'react';
 import { FlatList, ActivityIndicator, StyleSheet } from 'react-native';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';

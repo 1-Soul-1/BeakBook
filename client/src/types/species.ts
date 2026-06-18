@@ -1,3 +1,4 @@
+// src/types/species.ts
 import { BirdSpecies } from '../types/birds';
 
 export const BIRD_SPECIES: BirdSpecies[] = [

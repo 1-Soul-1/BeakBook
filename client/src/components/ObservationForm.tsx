@@ -1,3 +1,4 @@
+// src/components/ObservationForm.tsx
 import { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { Observation } from '../types/observation';

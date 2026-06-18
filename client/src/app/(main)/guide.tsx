@@ -1,3 +1,4 @@
+// app/main/giudes.tsx
 import React, { useState, useEffect } from 'react';
 import { FlatList, TextInput, StyleSheet, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';

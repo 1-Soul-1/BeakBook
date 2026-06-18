@@ -1,3 +1,4 @@
+// src/utils/image.ts
 import * as ImageManipulator from 'expo-image-manipulator';
 
 export const compressImage = async (

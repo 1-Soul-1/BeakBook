@@ -1,3 +1,4 @@
+// src/types/observation.ts
 export type Observation = {
   id: number;
   birdName: string;

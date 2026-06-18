@@ -1,4 +1,4 @@
-// components/BirdCard.tsx
+// src/components/BirdCard.tsx
 import { View, StyleSheet } from 'react-native';
 import { BirdSpecies } from '../types/birds';
 import { ThemedText, ThemedTextSecondary, getThemeColors } from './Themed';

@@ -1,3 +1,4 @@
+// src/components/BirdList.tsx
 import { useEffect, useState } from 'react';
 import { View, Text, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
 import { getBirdSpecies } from '../api/client';
