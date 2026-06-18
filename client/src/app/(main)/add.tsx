@@ -76,9 +76,14 @@ export default function AddObservationScreen() {
   };
   
   const getLocation = async () => {
-    const name = await getCurrentLocationName();
-    setLocation(name);
-    showToast('Местоположение определено', 'success');
+    try {
+      const name = await getCurrentLocationName();
+      setLocation(name);
+      showToast('Местоположение определено', 'success');
+    } catch (error) {
+      showToast('Не удалось определить местоположение', 'error');
+      setLocation('Оренбургская область');
+    }
   };
   
   const selectRareBird = (birdName: string) => {
