@@ -8,3 +8,6 @@ npm install
 
 cd client -> cd server -> npm run dev
 cd client -> npm run web
+
+
+eas build -p android --profile preview --clear-cache
