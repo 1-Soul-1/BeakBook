@@ -1,3 +1,7 @@
+eas credentials
+
+
+в eas.json
 {
   "cli": {
     "appVersionSource": "remote"
