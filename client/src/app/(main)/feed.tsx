@@ -1,6 +1,6 @@
-// app/main/feed.tsx
+// src/app/(main)/feed.tsx
 import React, { useState, useCallback, useMemo } from 'react';
-import { FlatList, TextInput, View, TouchableOpacity, StyleSheet, Modal, ScrollView, Alert, Image, Platform, RefreshControl, ActivityIndicator } from 'react-native';
+import { FlatList, TextInput, View, TouchableOpacity, StyleSheet, Modal, ScrollView, Image, Platform, RefreshControl, ActivityIndicator } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { useObservations } from '../../hooks/useObservations';
@@ -99,8 +99,13 @@ export default function FeedScreen() {
     showToast('Наблюдение обновлено', 'success');
   }, [selectedObs, editLocation, editDate, editNotes, editPhoto, updateObservation, refreshObservations, showToast]);
 
+  // ✅ ИСПРАВЛЕНО: используем ImagePicker.MediaTypeOptions.Images
   const pickImageForEdit = useCallback(async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: 'images', quality: 0.6, base64: true });
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 0.6,
+      base64: true,
+    });
     if (!result.canceled && result.assets[0].base64) {
       const compressed = await compressImage(`data:image/jpeg;base64,${result.assets[0].base64}`);
       setEditPhoto(compressed);
@@ -216,7 +221,8 @@ export default function FeedScreen() {
         windowSize={5}
         maxToRenderPerBatch={10}
         removeClippedSubviews={Platform.OS === 'android'}
-        initialNumToRender={8}
+        initialNumToRender={10}
+        updateCellsBatchingPeriod={50}
       />
 
       <Modal visible={modalVisible} animationType="slide" transparent>

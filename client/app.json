@@ -29,11 +29,7 @@
       },
       "package": "com.beakbook.app",
       "softwareKeyboardLayoutMode": "pan",
-      "usesCleartextTraffic": true,
-      "permissions": [
-        "INTERNET",
-        "ACCESS_NETWORK_STATE"
-      ]
+      "usesCleartextTraffic": true
     },
     "web": {
       "bundler": "metro",

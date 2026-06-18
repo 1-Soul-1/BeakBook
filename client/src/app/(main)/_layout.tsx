@@ -5,14 +5,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { ThemedText, ThemedTextSecondary, getThemeColors } from '@/components/Themed';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Spacing, isIOS, BorderRadius } from '@/constants/theme';
+import { Spacing, isIOS, BorderRadius, responsiveSize } from '@/constants/theme';
 
 export default function MainLayout() {
   const { theme, toggleTheme } = useTheme();
   const colors = getThemeColors(theme);
   const insets = useSafeAreaInsets();
 
-  // Размеры для заголовка в зависимости от платформы
   const headerHeight = Platform.select({
     ios: 90,
     android: 70,
@@ -95,6 +94,7 @@ export default function MainLayout() {
         },
         tabBarActiveTintColor: colors.accent,
         tabBarInactiveTintColor: colors.textSecondary,
+        tabBarLabelPosition: 'below-icon',
         tabBarLabelStyle: {
           fontSize: Platform.select({ ios: 10, android: 9 }),
           fontWeight: '500',

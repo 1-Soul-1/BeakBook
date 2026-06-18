@@ -1,11 +1,11 @@
-// components/ObservationCard.tsx
+// src/components/ObservationCard.tsx
 import React, { useState } from 'react';
 import { View, Image, TouchableOpacity, StyleSheet, Modal, Platform, ScrollView } from 'react-native';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Observation } from '../types/observation';
 import { ThemedCard, ThemedText, ThemedTextSecondary, getThemeColors } from './Themed';
 import { useTheme } from '../contexts/ThemeContext';
-import { Spacing, BorderRadius } from '../constants/theme';
+import { Spacing, BorderRadius, responsiveSize } from '../constants/theme';
 
 type Props = {
   observation: Observation;
@@ -23,7 +23,7 @@ const statusColorMap = {
   common: '#A8A090',
 };
 
-export const ObservationCard: React.FC<Props> = ({
+export const ObservationCard = React.memo<Props>(({
   observation,
   onPress,
   onToggleFavorite,
@@ -156,13 +156,15 @@ export const ObservationCard: React.FC<Props> = ({
       </Modal>
     </>
   );
-};
+});
+
+ObservationCard.displayName = 'ObservationCard';
 
 const styles = StyleSheet.create({
   card: {
     padding: Spacing.five,
     marginBottom: Spacing.three,
-    height: 280,
+    minHeight: 220, // вместо фиксированной высоты
     ...Platform.select({
       ios: { shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 4 },
       android: { elevation: 2 },
@@ -180,17 +182,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.two,
-    flexWrap: 'nowrap',  // запрещаем перенос на новую строку
+    flexWrap: 'nowrap',
     marginTop: Spacing.one,
   },
   infoBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    paddingHorizontal: Spacing.two,  // уменьшено с three (12px) до two (8px)
+    paddingHorizontal: Spacing.two,
     paddingVertical: Spacing.one,
     borderRadius: BorderRadius.xl,
-    flexShrink: 0,  // не сжимаем, чтобы не переносились
+    flexShrink: 0,
   },
   infoText: {
     fontSize: 11,
@@ -205,7 +207,7 @@ const styles = StyleSheet.create({
   actionButton: { flexDirection: 'row', alignItems: 'center', gap: Spacing.one, paddingVertical: Spacing.one },
   actionText: { fontSize: 12, fontWeight: '600' },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center', ...Platform.select({ web: { backdropFilter: 'blur(4px)' } }) },
-  modalContent: { width: '80%', maxWidth: 320, borderRadius: BorderRadius.xxl, padding: Spacing.six, alignItems: 'center', ...Platform.select({ ios: { shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 8 }, android: { elevation: 4 }, web: { boxShadow: '0 4px 12px rgba(0,0,0,0.1)' } }) },
+  modalContent: { width: '90%', maxWidth: 400, borderRadius: BorderRadius.xxl, padding: Spacing.six, alignItems: 'center', ...Platform.select({ ios: { shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 8 }, android: { elevation: 4 }, web: { boxShadow: '0 4px 12px rgba(0,0,0,0.1)' } }) },
   modalIcon: { marginBottom: Spacing.four },
   modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: Spacing.two, textAlign: 'center' },
   modalMessage: { fontSize: 14, textAlign: 'center', marginBottom: Spacing.six },

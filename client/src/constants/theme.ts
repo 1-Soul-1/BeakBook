@@ -1,6 +1,9 @@
-// constants/theme.ts
-import { Platform } from 'react-native';
+// src/constants/theme.ts
+import { Platform, Dimensions } from 'react-native';
 
+const { width } = Dimensions.get('window');
+
+// ========== ЦВЕТА ==========
 export const Colors = {
   light: {
     background: '#F5F0E8',
@@ -56,6 +59,7 @@ export const Colors = {
   },
 } as const;
 
+// ========== ОТСТУПЫ ==========
 export const Spacing = {
   half: 2,
   one: 4,
@@ -70,6 +74,7 @@ export const Spacing = {
   ten: 64,
 } as const;
 
+// ========== СКРУГЛЕНИЯ ==========
 export const BorderRadius = {
   small: 8,
   medium: 12,
@@ -82,6 +87,7 @@ export const BorderRadius = {
   circle: 999,
 } as const;
 
+// ========== ТИПОГРАФИКА ==========
 export const Typography = {
   h1: { fontSize: 28, fontWeight: '800' as const, lineHeight: 34 },
   h2: { fontSize: 24, fontWeight: '700' as const, lineHeight: 30 },
@@ -93,6 +99,7 @@ export const Typography = {
   captionSmall: { fontSize: 10, fontWeight: '500' as const, lineHeight: 14 },
 } as const;
 
+// ========== ШРИФТЫ (платформозависимые) ==========
 export const Fonts = Platform.select({
   ios: {
     sans: 'system-ui',
@@ -114,6 +121,7 @@ export const Fonts = Platform.select({
   },
 }) as Record<string, string>;
 
+// ========== ТЕНИ ==========
 export const Shadows = {
   small: {
     shadowColor: '#000',
@@ -138,8 +146,33 @@ export const Shadows = {
   },
 };
 
+// ========== ПЛАТФОРМА ==========
 export const isIOS = Platform.OS === 'ios';
 export const isAndroid = Platform.OS === 'android';
 export const isWeb = Platform.OS === 'web';
+
 export const BOTTOM_TAB_HEIGHT = isIOS ? 80 : 60;
 export const HEADER_HEIGHT = isIOS ? 100 : 80;
+
+// ========== НОВЫЕ АДАПТИВНЫЕ ФУНКЦИИ ==========
+export const responsiveSize = (size: number): number => {
+  const baseWidth = 375;
+  return Math.round((size * width) / baseWidth);
+};
+
+export const getSpacing = (size: keyof typeof Spacing): number => {
+  const value = Spacing[size];
+  return Platform.select({
+    ios: value,
+    android: value * 0.85,
+    default: value,
+  });
+};
+
+export const getFontSize = (size: number): number => {
+  return Platform.select({
+    ios: size,
+    android: size * 0.9,
+    default: size,
+  });
+};
