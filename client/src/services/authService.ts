@@ -1,3 +1,4 @@
+// src/services/authService.ts
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { api } from '@/api/client';
 
@@ -10,44 +11,74 @@ export type User = {
   email: string;
 };
 
+// Улучшенная функция извлечения сообщения об ошибке
 const extractErrorMessage = (error: any): string => {
   if (error.response) {
     const data = error.response.data;
-    if (typeof data === 'string') return data;
-    if (data.detail) return data.detail;
-    if (data.error) return data.error;
-    if (data.message) return data.message;
-    if (data.email) return data.email[0];
-    if (data.name) return data.name[0];
-    if (data.password) return data.password[0];
-    return 'Неизвестная ошибка сервера';
+    // Если ответ - объект с деталями валидации
+    if (data && typeof data === 'object') {
+      // Проверяем распространённые поля ошибок Django REST Framework
+      const errorMessages: string[] = [];
+      for (const [key, value] of Object.entries(data)) {
+        if (Array.isArray(value) && value.length > 0) {
+          errorMessages.push(`${key}: ${value.join(', ')}`);
+        } else if (typeof value === 'string') {
+          errorMessages.push(`${key}: ${value}`);
+        } else if (typeof value === 'object' && value !== null) {
+          // Рекурсивно обрабатываем вложенные объекты (редко, но на всякий случай)
+          errorMessages.push(JSON.stringify(value));
+        }
+      }
+      if (errorMessages.length > 0) {
+        return errorMessages.join('; ');
+      }
+      // Если поле "detail" – возвращаем его
+      if (data.detail) return data.detail;
+      if (data.error) return data.error;
+      if (data.message) return data.message;
+      // Если ничего не подошло – возвращаем JSON строку
+      return JSON.stringify(data);
+    }
+    return data || 'Неизвестная ошибка сервера';
   }
   return 'Ошибка сети или сервер не отвечает';
 };
 
 export const registerUser = async (name: string, email: string, password: string): Promise<User> => {
   try {
+    console.log('🔐 Register request:', { email, name });
     const response = await api.post('/user/register/', { email, name, password });
-    const { access, user } = response.data;  // ← access вместо token
-    if (!access || !user) throw new Error('Неверный ответ сервера');
+    console.log('✅ Register response:', response.data);
+    const { access, user } = response.data;
+    if (!access || !user) {
+      throw new Error('Неверный ответ сервера: отсутствует access или user');
+    }
     await AsyncStorage.setItem(TOKEN_KEY, access);
     await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
     return user;
   } catch (error: any) {
-    throw new Error(extractErrorMessage(error));
+    const message = extractErrorMessage(error);
+    console.error('❌ Register error:', message);
+    throw new Error(message);
   }
 };
 
 export const loginUser = async (email: string, password: string): Promise<User> => {
   try {
+    console.log('🔐 Login request:', { email });
     const response = await api.post('/user/login/', { email, password });
-    const { access, user } = response.data;  // ← access вместо token
-    if (!access || !user) throw new Error('Неверный ответ сервера');
+    console.log('✅ Login response:', response.data);
+    const { access, user } = response.data;
+    if (!access || !user) {
+      throw new Error('Неверный ответ сервера: отсутствует access или user');
+    }
     await AsyncStorage.setItem(TOKEN_KEY, access);
     await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
     return user;
   } catch (error: any) {
-    throw new Error(extractErrorMessage(error));
+    const message = extractErrorMessage(error);
+    console.error('❌ Login error:', message);
+    throw new Error(message);
   }
 };
 
@@ -61,8 +92,10 @@ export const getCurrentUser = async (): Promise<User | null> => {
     const token = await AsyncStorage.getItem(TOKEN_KEY);
     if (!token) return null;
     const userStr = await AsyncStorage.getItem(USER_KEY);
-    return userStr ? JSON.parse(userStr) : null;
-  } catch {
+    if (!userStr) return null;
+    return JSON.parse(userStr);
+  } catch (error) {
+    console.error('Get user error:', error);
     return null;
   }
 };

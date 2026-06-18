@@ -1,12 +1,14 @@
 // src/app/(auth)/signin.tsx
 import { useState } from 'react';
-import { View, TextInput, Alert, TouchableOpacity, StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { ThemedView, ThemedText, getThemeColors } from '@/components/Themed';
 import { useTheme } from '@/contexts/ThemeContext';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { StatusBar } from 'expo-status-bar';
+import { useToast } from '@/hooks/useToast';
+import { Toast } from '@/components/Toast';
 
 export default function SignInScreen() {
   const { theme } = useTheme();
@@ -15,10 +17,11 @@ export default function SignInScreen() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const { toast, showToast, hideToast } = useToast();
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
-      Alert.alert('Ошибка', 'Заполните все поля');
+      showToast('Заполните все поля', 'error');
       return;
     }
     setLoading(true);
@@ -26,7 +29,7 @@ export default function SignInScreen() {
       await login(email.trim(), password);
       router.replace('/feed');
     } catch (error: any) {
-      Alert.alert('Ошибка входа', error.message);
+      showToast(error.message || 'Ошибка входа', 'error');
     } finally {
       setLoading(false);
     }
@@ -98,6 +101,9 @@ export default function SignInScreen() {
           </View>
         </ThemedView>
       </ScrollView>
+
+      {/* Всплывающие уведомления */}
+      <Toast visible={toast.visible} message={toast.message} type={toast.type} onHide={hideToast} />
     </KeyboardAvoidingView>
   );
 }
@@ -148,9 +154,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderRadius: 14,
-    paddingHorizontal: Platform.select({ ios: 14, android: 12 }),
-    paddingVertical: Platform.select({ ios: 12, android: 10 }),
-    gap: Platform.select({ ios: 10, android: 8 }),
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    gap: 10,
   },
   input: {
     flex: 1,

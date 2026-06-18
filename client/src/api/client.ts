@@ -65,7 +65,12 @@ api.interceptors.response.use(
       authToken = null;
       delete api.defaults.headers.common['Authorization'];
     }
-    console.error('❌ API Error:', error.response?.data || error.message);
+    console.error('❌ API Error:', {
+      status: error.response?.status,
+      data: error.response?.data,
+      headers: error.response?.headers,
+      message: error.message,
+    });
     return Promise.reject(error);
   }
 );

@@ -1,12 +1,14 @@
 // src/app/(auth)/signup.tsx
 import { useState } from 'react';
-import { View, TextInput, Alert, TouchableOpacity, StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { ThemedView, ThemedText, getThemeColors } from '@/components/Themed';
 import { useTheme } from '@/contexts/ThemeContext';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { StatusBar } from 'expo-status-bar';
+import { useToast } from '@/hooks/useToast';
+import { Toast } from '@/components/Toast';
 
 export default function SignUpScreen() {
   const { theme } = useTheme();
@@ -17,36 +19,39 @@ export default function SignUpScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
+  const { toast, showToast, hideToast } = useToast();
 
   const handleRegister = async () => {
     if (!name.trim() || !email.trim() || !password.trim()) {
-      Alert.alert('Ошибка', 'Заполните все поля');
+      showToast('Заполните все поля', 'error');
       return;
     }
 
     if (password.length < 6) {
-      Alert.alert('Ошибка', 'Пароль должен содержать минимум 6 символов');
+      showToast('Пароль должен содержать минимум 6 символов', 'error');
       return;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert('Ошибка', 'Пароли не совпадают');
+      showToast('Пароли не совпадают', 'error');
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) {
-      Alert.alert('Ошибка', 'Введите корректный email');
+      showToast('Введите корректный email', 'error');
       return;
     }
 
     setLoading(true);
     try {
       await register(name.trim(), email.trim(), password);
-      Alert.alert('Успех', 'Аккаунт успешно создан!');
-      router.replace('/feed');
+      showToast('Аккаунт успешно создан!', 'success');
+      setTimeout(() => {
+        router.replace('/feed');
+      }, 1500);
     } catch (error: any) {
-      Alert.alert('Ошибка регистрации', error.message);
+      showToast(error.message || 'Ошибка регистрации', 'error');
     } finally {
       setLoading(false);
     }
@@ -153,6 +158,9 @@ export default function SignUpScreen() {
           </View>
         </ThemedView>
       </ScrollView>
+
+      {/* Всплывающие уведомления */}
+      <Toast visible={toast.visible} message={toast.message} type={toast.type} onHide={hideToast} />
     </KeyboardAvoidingView>
   );
 }
