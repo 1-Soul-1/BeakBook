@@ -116,7 +116,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8081",
     "http://10.0.2.2:8081",
     "http://62.113.99.166:8081",
-    "*",
 ]
 
 CORS_ALLOW_METHODS = [
